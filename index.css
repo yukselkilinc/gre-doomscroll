@@ -1,0 +1,305 @@
+:root {
+  --safe-top: env(safe-area-inset-top, 48px);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #000;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Hide scrollbars but keep scrolling working */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Reels Vertical Swipe Container */
+#reels-feed {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  height: 100vh;
+  width: 100vw;
+  background-color: #000;
+}
+
+/* Individual Reels Card */
+.reel-card {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Video Player */
+.reel-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: #000;
+}
+
+/* Sidebar action tray (TikTok / Instagram style) */
+.action-tray {
+  position: absolute;
+  right: 16px;
+  bottom: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  align-items: center;
+  z-index: 20;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Hide action tray when comments drawer is active */
+.comments-active .action-tray {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(50px);
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+  transition: transform 0.15s ease;
+}
+
+.action-btn:active {
+  transform: scale(0.9);
+}
+
+.action-btn span {
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 4px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+/* Bottom Overlay Word Info (Instagram style) */
+.word-info-overlay {
+  position: absolute;
+  left: 16px;
+  bottom: 80px;
+  right: 80px;
+  z-index: 20;
+  pointer-events: none;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+}
+
+.word-info-overlay * {
+  pointer-events: auto;
+}
+
+/* Audio wave animation bars for fallback mode */
+.wave-bar {
+  display: inline-block;
+  width: 3px;
+  height: 20px;
+  background-color: #2dd4bf;
+  border-radius: 4px;
+  animation: wave 1.2s ease-in-out infinite alternate;
+}
+
+.wave-bar-1 { animation-delay: 0.1s; }
+.wave-bar-2 { animation-delay: 0.3s; }
+.wave-bar-3 { animation-delay: 0.6s; }
+.wave-bar-4 { animation-delay: 0.2s; }
+.wave-bar-5 { animation-delay: 0.4s; }
+
+@keyframes wave {
+  0% { height: 4px; }
+  100% { height: 28px; }
+}
+
+/* Double tap Heart Burst Animation */
+.heart-pop-animation {
+  position: absolute;
+  pointer-events: none;
+  animation: popHeart 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+  z-index: 30;
+}
+
+@keyframes popHeart {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  30% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  80% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+}
+
+/* Smooth fade in animation for loaded contents */
+.fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Smooth video shift when comments open */
+.reel-video, .audio-fallback {
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.comments-active .reel-video,
+.comments-active .audio-fallback {
+  transform-origin: center center;
+  transform: translateY(calc(env(safe-area-inset-top, 48px) - 20vh));
+}
+
+/* Drag Notch Active Classic Glow */
+#comments-drag-handle > div {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+#comments-drag-handle.notch-active > div,
+#comments-drag-handle:active > div {
+  background-color: #a3a3a3 !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 4px rgba(163, 163, 163, 0.8) !important;
+  transform: scaleX(1.15);
+}
+
+/* PC specific styles to prevent bottom navbar from blocking subtitles */
+@media (min-width: 768px) {
+  #comments-drawer {
+    height: 58vh !important;
+    font-size: 16px !important;
+  }
+
+  #comments-content-list {
+    overflow-y: hidden !important;
+  }
+
+  .reel-video {
+    height: calc(100% - 64px) !important;
+    margin-bottom: 64px;
+  }
+
+  /* When comments are active, override the translateY shift to only enlarge (scale up) the video */
+  .comments-active .reel-video {
+    transform-origin: center center !important;
+    transform: scale(1.1) !important;
+    margin-bottom: 0;
+    height: 100% !important;
+  }
+
+  /* Make heart, comments, save, and learn buttons 1.5x bigger */
+  .action-btn svg {
+    width: 33px !important;
+    height: 33px !important;
+  }
+  .action-tray span {
+    font-size: 15px !important;
+    margin-top: 6px !important;
+  }
+  .action-tray {
+    gap: 30px !important;
+    right: 24px !important;
+  }
+
+  /* Make EVERYTHING in comments section 1.5x bigger on PC */
+  #comments-content-list > div {
+    font-size: 16px !important;
+    gap: 16px !important;
+  }
+
+  /* Avatar size */
+  #comments-content-list .w-8.h-8 {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 18px !important;
+  }
+
+  /* Usernames & body text */
+  #comments-content-list .font-bold.text-slate-900,
+  #comments-content-list .font-bold.mr-1 {
+    font-size: 17px !important;
+  }
+
+  #comments-content-list p {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Simple word card mockup inside comment */
+  #comments-content-list .text-xl {
+    font-size: 26px !important;
+  }
+  #comments-content-list .text-\[10px\] {
+    font-size: 13px !important;
+  }
+
+  /* Footer actions (Reply, 2w, etc) */
+  #comments-content-list .text-\[10px\].text-slate-400 {
+    font-size: 13px !important;
+  }
+
+  /* Comment hearts & like count */
+  #comments-content-list svg.w-\[14px\] {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  #comments-content-list .like-count {
+    font-size: 14px !important;
+    margin-top: 4px !important;
+  }
+
+  /* Bottom comment bar entry */
+  #comments-drawer input {
+    font-size: 16px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    padding-left: 20px !important;
+    padding-right: 90px !important;
+  }
+
+  #comments-drawer button {
+    font-size: 16px !important;
+    right: 24px !important;
+  }
+
+  #comments-drawer svg.w-8.h-8 {
+    width: 48px !important;
+    height: 48px !important;
+  }
+}
