@@ -1642,7 +1642,6 @@ function selectReelFromDashboard(index) {
     const targetIndex = (typeof index === 'number' && !isNaN(index) && index >= 0 && index < appData.length)
         ? index
         : getResumeIndex(index);
-    reelPauseStates[targetIndex] = false;
     updateSavedReelIndex(targetIndex);
     
     // Temporarily set scrollBehavior to auto so positioning is instant without fast scroll animation
@@ -2015,7 +2014,33 @@ function handleLocalClipsSelected(fileList) {
                 showToast(msg, 'success');
 
                 currentTab = '';
+                reelPauseStates[targetReelIndex] = false;
                 selectReelFromDashboard(targetReelIndex);
+
+                // Programmatically click the screen 1 sec after import finishes to trigger autoplay & sound
+                setTimeout(() => {
+                    try {
+                        const evt = new MouseEvent('click', {
+                            bubbles: true,
+                            cancelable: true,
+                            view: window
+                        });
+                        document.body.dispatchEvent(evt);
+                    } catch (e) {}
+
+                    userHasInteracted = true;
+                    unlockMobileAudio();
+
+                    const cards = document.querySelectorAll('.reel-card');
+                    const card = cards[targetReelIndex];
+                    if (card) {
+                        const v = card.querySelector('.reel-video');
+                        if (v) {
+                            v.muted = isAppMuted ? true : false;
+                            v.play().catch(() => {});
+                        }
+                    }
+                }, 1000);
             }, 300);
         };
 
