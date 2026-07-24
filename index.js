@@ -1616,8 +1616,23 @@ function onNavClick(target) {
     }
 }
 
+function highlightStartSwipingButton() {
+    const btn = document.getElementById('start-swiping-btn');
+    if (btn) {
+        btn.classList.add('ring-4', 'ring-teal-400', 'ring-offset-2', 'ring-offset-neutral-950', 'animate-pulse', 'scale-105');
+    }
+}
+
+function removeStartSwipingHighlight() {
+    const btn = document.getElementById('start-swiping-btn');
+    if (btn) {
+        btn.classList.remove('ring-4', 'ring-teal-400', 'ring-offset-2', 'ring-offset-neutral-950', 'animate-pulse', 'scale-105');
+    }
+}
+
 // Select a reel from the dashboard and transition smoothly
 function selectReelFromDashboard(index) {
+    removeStartSwipingHighlight();
     const mainScreen = document.getElementById('main-screen');
     const searchScreen = document.getElementById('search-screen');
     const feed = document.getElementById('reels-feed');
@@ -2013,57 +2028,9 @@ function handleLocalClipsSelected(fileList) {
                 }
                 showToast(msg, 'success');
 
-                currentTab = '';
-                reelPauseStates[targetReelIndex] = false;
-                selectReelFromDashboard(targetReelIndex);
-
-                // Auto-tap sequence 1 sec and 2 sec after import finishes (for Safari & WebKit unmuted autoplay)
-                const triggerAutoTapSequence = (delayMs) => {
-                    setTimeout(() => {
-                        try {
-                            const clickEvt = new MouseEvent('click', {
-                                bubbles: true,
-                                cancelable: true,
-                                view: window
-                            });
-                            document.body.dispatchEvent(clickEvt);
-                        } catch (e) {}
-
-                        try {
-                            if (typeof TouchEvent !== 'undefined') {
-                                const touchEvt = new TouchEvent('touchstart', {
-                                    bubbles: true,
-                                    cancelable: true,
-                                    view: window
-                                });
-                                document.body.dispatchEvent(touchEvt);
-                            }
-                        } catch (e) {}
-
-                        userHasInteracted = true;
-                        unlockMobileAudio();
-
-                        const cards = document.querySelectorAll('.reel-card');
-                        const card = cards[targetReelIndex];
-                        if (card) {
-                            const v = card.querySelector('.reel-video');
-                            if (v) {
-                                v.muted = isAppMuted ? true : false;
-                                const p = v.play();
-                                if (p !== undefined) {
-                                    p.catch(() => {
-                                        v.muted = true;
-                                        v.play().catch(() => {});
-                                    });
-                                }
-                            }
-                        }
-                    }, delayMs);
-                };
-
-                // Trigger at 1 second AND 2 seconds after import finishes
-                triggerAutoTapSequence(1000);
-                triggerAutoTapSequence(2000);
+                // Navigate back to / stay on main dashboard screen after importing finishes
+                showMainDashboard();
+                highlightStartSwipingButton();
             }, 300);
         };
 
