@@ -295,7 +295,7 @@ function renderReelsFeed() {
 
                 <!-- Centered Play Icon Overlay (indicates video is paused) -->
                 <div class="play-pause-overlay absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-200 z-20">
-                    <div class="p-4 bg-black/40 backdrop-blur-sm rounded-full text-white shadow-xl">
+                    <div class="p-4 bg-black/40 backdrop-blur-[2.5px] border border-white/15 rounded-full text-white shadow-xl">
                         <svg class="w-12 h-12 md:w-14 md:h-14" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
                         </svg>
@@ -486,7 +486,7 @@ function unlockMobileAudio() {
     window.addEventListener(evtName, unlockMobileAudio, { capture: true, passive: true });
 });
 
-// Helper to show play icon overlay only when video is in paused state (and comments drawer is closed)
+// Helper to show play icon overlay only when video is in user-paused state (and comments drawer is closed)
 function updatePlayIconVisibility(index) {
     const cards = document.querySelectorAll('.reel-card');
     const card = cards[index];
@@ -500,7 +500,13 @@ function updatePlayIconVisibility(index) {
         return;
     }
 
-    if (video && video.paused) {
+    // If active reel is NOT user-paused, keep play icon hidden (prevents flash during video loading/scrolling/tab navigation)
+    if (index === currentIndex && !reelPauseStates[index]) {
+        overlay.style.opacity = '0';
+        return;
+    }
+
+    if (video && (video.paused || reelPauseStates[index])) {
         overlay.style.opacity = '1';
     } else {
         overlay.style.opacity = '0';
