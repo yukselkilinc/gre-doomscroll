@@ -375,6 +375,14 @@ function renderReelsFeed() {
             }
         });
 
+        video.addEventListener('play', () => {
+            updatePlayPauseState(card, false);
+        });
+
+        video.addEventListener('pause', () => {
+            updatePlayPauseState(card, true);
+        });
+
         video.addEventListener('loadedmetadata', () => {
             updateDefinitionMaxWidths();
         });
@@ -694,21 +702,59 @@ function openShowIMDB(e, showName) {
     }, 50);
 }
 
+function updatePlayPauseState(card, isPaused) {
+    if (!card) return;
+    const overlay = card.querySelector('.play-pause-overlay');
+    if (!overlay) return;
+
+    const commentsOpen = document.body.classList.contains('comments-open');
+    const commentsActive = card.classList.contains('comments-active');
+
+    if (isPaused && !commentsOpen && !commentsActive) {
+        overlay.innerHTML = `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg></div>`;
+        requestAnimationFrame(() => {
+            overlay.style.transition = 'opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+            overlay.style.opacity = '1';
+        });
+    } else {
+        overlay.style.transition = 'opacity 0.25s ease-out';
+        overlay.style.opacity = '0';
+    }
+}
+
+let windowResizeTimer = null;
+window.addEventListener('resize', () => {
+    document.body.classList.add('is-resizing');
+    if (windowResizeTimer) clearTimeout(windowResizeTimer);
+    windowResizeTimer = setTimeout(() => {
+        document.body.classList.remove('is-resizing');
+        const cards = document.querySelectorAll('.reel-card');
+        if (cards[currentIndex]) {
+            const v = cards[currentIndex].querySelector('.reel-video');
+            if (v) updatePlayPauseState(cards[currentIndex], v.paused);
+        }
+    }, 320);
+}, { passive: true });
+
 // Fast single-tap play/pause splash feedback
 function showPlayPauseOverlay(index, isPlay) {
     const card = document.querySelectorAll('.reel-card')[index];
-    const overlay = card ? card.querySelector('.play-pause-overlay') : null;
+    if (!card) return;
+    const overlay = card.querySelector('.play-pause-overlay');
     if (!overlay) return;
 
-    overlay.innerHTML = isPlay 
-        ? `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg></div>`
-        : `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg></div>`;
-        
-    overlay.style.transition = 'opacity 0.15s ease-out';
-    overlay.style.opacity = '1';
-    setTimeout(() => {
-        overlay.style.opacity = '0';
-    }, 200);
+    if (isPlay) {
+        overlay.innerHTML = `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg></div>`;
+        overlay.style.transition = 'opacity 0.15s ease-out';
+        overlay.style.opacity = '1';
+        setTimeout(() => {
+            overlay.style.opacity = '0';
+        }, 200);
+    } else {
+        overlay.innerHTML = `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg></div>`;
+        const video = card.querySelector('.reel-video');
+        updatePlayPauseState(card, video ? video.paused : true);
+    }
 }
 
 // Double tap Heart Pop & Fly Animation (GPU accelerated, ultra fast & smooth)
@@ -1003,6 +1049,17 @@ function escapeRegExp(string) {
 // Drawer Comments / Context Open-Close Logic
 function openComments(e, index) {
     if (e) e.stopPropagation();
+    commentsOpen = true;
+    document.body.classList.add('comments-open');
+    const activeCard = document.querySelectorAll('.reel-card')[index];
+    if (activeCard) {
+        activeCard.classList.add('comments-active');
+        const overlay = activeCard.querySelector('.play-pause-overlay');
+        if (overlay) {
+            overlay.style.transition = 'none';
+            overlay.style.opacity = '0';
+        }
+    }
     const drawer = document.getElementById('comments-drawer');
     const navbar = document.getElementById('bottom-navbar');
     
@@ -1342,6 +1399,12 @@ function closeComments() {
         hideNavbarOnPCReels();
     } else {
         navbar.classList.remove('translate-y-full');
+    }
+
+    const cards = document.querySelectorAll('.reel-card');
+    if (cards[currentIndex]) {
+        const v = cards[currentIndex].querySelector('.reel-video');
+        if (v) updatePlayPauseState(cards[currentIndex], v.paused);
     }
 
     // Restore reels feed scrolling
