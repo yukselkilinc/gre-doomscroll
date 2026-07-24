@@ -293,10 +293,10 @@ function renderReelsFeed() {
                     </button>
                 </div>
 
-                <!-- Big Double-Tap Heart overlay -->
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-200 play-pause-overlay">
-                    <div class="p-4 bg-black/40 rounded-full text-white">
-                        <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                <!-- Centered Play Icon Overlay (indicates video is paused) -->
+                <div class="play-pause-overlay absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-200 z-20">
+                    <div class="p-4 bg-black/40 backdrop-blur-sm rounded-full text-white shadow-xl">
+                        <svg class="w-12 h-12 md:w-14 md:h-14" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
@@ -368,6 +368,14 @@ function renderReelsFeed() {
         if (w.videoSrc && video.src !== w.videoSrc) {
             video.src = w.videoSrc;
         }
+
+        video.addEventListener('play', () => {
+            updatePlayIconVisibility(idx);
+        });
+
+        video.addEventListener('pause', () => {
+            updatePlayIconVisibility(idx);
+        });
 
         video.addEventListener('canplay', () => {
             if (idx === currentIndex && video.paused) {
@@ -478,6 +486,27 @@ function unlockMobileAudio() {
     window.addEventListener(evtName, unlockMobileAudio, { capture: true, passive: true });
 });
 
+// Helper to show play icon overlay only when video is in paused state (and comments drawer is closed)
+function updatePlayIconVisibility(index) {
+    const cards = document.querySelectorAll('.reel-card');
+    const card = cards[index];
+    if (!card) return;
+    const video = card.querySelector('.reel-video');
+    const overlay = card.querySelector('.play-pause-overlay');
+    if (!overlay) return;
+
+    if (commentsOpen) {
+        overlay.style.opacity = '0';
+        return;
+    }
+
+    if (video && video.paused) {
+        overlay.style.opacity = '1';
+    } else {
+        overlay.style.opacity = '0';
+    }
+}
+
 // Play active video card, pause all others, and pre-buffer nearby cards for 0ms scroll delay
 function playActiveVideo(index) {
     updateDefinitionMaxWidths();
@@ -494,19 +523,28 @@ function playActiveVideo(index) {
                 // Synchronously set muted state before play so audio and video stay in 0ms lockstep
                 video.muted = isAppMuted ? true : false;
 
-                if (video.paused) {
-                    const playPromise = video.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(e => {
-                            console.log("Unmuted play failed, retrying muted: ", e);
-                            video.muted = true;
-                            video.play().catch(() => {
-                                video.classList.add('hidden');
-                                if (fallback) fallback.classList.remove('hidden');
-                                speakActiveWord(idx);
-                            });
-                        });
+                // If this reel was user-paused by tapping, do NOT auto play on return
+                if (reelPauseStates[index]) {
+                    if (!video.paused) {
+                        video.pause();
                     }
+                    updatePlayIconVisibility(idx);
+                } else {
+                    if (video.paused) {
+                        const playPromise = video.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(e => {
+                                console.log("Unmuted play failed, retrying muted: ", e);
+                                video.muted = true;
+                                video.play().catch(() => {
+                                    video.classList.add('hidden');
+                                    if (fallback) fallback.classList.remove('hidden');
+                                    speakActiveWord(idx);
+                                });
+                            });
+                        }
+                    }
+                    updatePlayIconVisibility(idx);
                 }
             } else {
                 if (fallback) fallback.classList.remove('hidden');
@@ -519,6 +557,7 @@ function playActiveVideo(index) {
                 if (!video.paused) {
                     video.pause();
                 }
+                updatePlayIconVisibility(idx);
                 if (Math.abs(idx - index) <= 2) {
                     if (video.preload !== 'auto') {
                         video.preload = 'auto';
@@ -636,11 +675,13 @@ function onCardUp(e, index) {
             const video = card.querySelector('.reel-video');
             if (video && !video.classList.contains('hidden')) {
                 if (video.paused) {
+                    reelPauseStates[index] = false;
                     video.play().catch(() => {});
-                    showPlayPauseOverlay(index, true);
+                    updatePlayIconVisibility(index);
                 } else {
+                    reelPauseStates[index] = true;
                     video.pause();
-                    showPlayPauseOverlay(index, false);
+                    updatePlayIconVisibility(index);
                 }
             }
             tapTimeout = null;
@@ -694,21 +735,9 @@ function openShowIMDB(e, showName) {
     }, 50);
 }
 
-// Fast single-tap play/pause splash feedback
+// Fast single-tap play feedback
 function showPlayPauseOverlay(index, isPlay) {
-    const card = document.querySelectorAll('.reel-card')[index];
-    const overlay = card ? card.querySelector('.play-pause-overlay') : null;
-    if (!overlay) return;
-
-    overlay.innerHTML = isPlay 
-        ? `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg></div>`
-        : `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg></div>`;
-        
-    overlay.style.transition = 'opacity 0.15s ease-out';
-    overlay.style.opacity = '1';
-    setTimeout(() => {
-        overlay.style.opacity = '0';
-    }, 200);
+    updatePlayIconVisibility(index);
 }
 
 // Double tap Heart Pop & Fly Animation (GPU accelerated, ultra fast & smooth)
@@ -879,6 +908,7 @@ function setupScrollListener() {
             }
             updateSavedReelIndex(index);
             closeComments();
+            reelPauseStates[index] = false;
             playActiveVideo(index);
         }
     });
@@ -1177,6 +1207,7 @@ function openComments(e, index) {
     content.innerHTML = commentsHtml || '<p class="text-sm text-slate-400 dark:text-slate-500 text-center py-6">No context available.</p>';
     
     commentsOpen = true;
+    updatePlayIconVisibility(index);
     document.body.classList.add('comments-open');
     drawer.style.visibility = 'visible';
     drawer.classList.remove('invisible');
@@ -1307,6 +1338,7 @@ function closeComments() {
         if (!commentsOpen) {
             drawer.style.visibility = 'hidden';
             drawer.classList.add('invisible');
+            updatePlayIconVisibility(currentIndex);
         }
     }, 230);
     
@@ -1607,6 +1639,9 @@ function selectReelFromDashboard(index) {
     const targetIndex = (typeof index === 'number' && !isNaN(index) && index >= 0 && index < appData.length)
         ? index
         : getResumeIndex(index);
+    if (typeof index === 'number' && !isNaN(index) && index !== currentIndex) {
+        reelPauseStates[targetIndex] = false;
+    }
     updateSavedReelIndex(targetIndex);
     
     // Temporarily set scrollBehavior to auto so positioning is instant without fast scroll animation
@@ -1948,8 +1983,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Helper to pause all video elements
 function pauseAllVideos() {
     const videos = document.querySelectorAll('.reel-video');
-    videos.forEach(v => {
+    videos.forEach((v, idx) => {
         if (v && !v.paused) v.pause();
+        updatePlayIconVisibility(idx);
     });
 }
 

@@ -78,9 +78,31 @@ body::-webkit-scrollbar, html::-webkit-scrollbar {
   background-color: #000;
 }
 
+/* Play/Pause Overlay - Centered Icon on Videos */
+.play-pause-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  z-index: 20;
+}
+
+/* Instantly hide play icon overlay when comments drawer is active */
+.comments-active .play-pause-overlay,
+body.comments-open .play-pause-overlay {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: none !important;
+}
+
 /* Safari (non-webapp) only layout adjustments */
 .safari-non-webapp:not(.comments-open) .reel-video,
-.safari-non-webapp:not(.comments-open) .audio-fallback {
+.safari-non-webapp:not(.comments-open) .audio-fallback,
+.safari-non-webapp:not(.comments-open) .play-pause-overlay {
   transform: translateY(-12.2vh);
 }
 
@@ -359,14 +381,16 @@ body.comments-open .show-badge-container {
     max-height: calc(47.3vh - 85px) !important;
   }
 
-  .reel-video {
+  .reel-video,
+  .play-pause-overlay {
     height: calc(100% - 64px) !important;
     margin-bottom: 64px;
     transition: height 0.3s ease-out, margin-bottom 0.3s ease-out;
   }
 
-  /* When bottom navbar is hidden in PC Reels mode, video resizes to 100% full top-to-bottom height */
-  body.navbar-hidden .reel-video {
+  /* When bottom navbar is hidden in PC Reels mode, video & play overlay resize to 100% full top-to-bottom height */
+  body.navbar-hidden .reel-video,
+  body.navbar-hidden .play-pause-overlay {
     height: 100% !important;
     margin-bottom: 0 !important;
   }
