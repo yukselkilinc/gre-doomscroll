@@ -2017,30 +2017,53 @@ function handleLocalClipsSelected(fileList) {
                 reelPauseStates[targetReelIndex] = false;
                 selectReelFromDashboard(targetReelIndex);
 
-                // Programmatically click the screen 1 sec after import finishes to trigger autoplay & sound
-                setTimeout(() => {
-                    try {
-                        const evt = new MouseEvent('click', {
-                            bubbles: true,
-                            cancelable: true,
-                            view: window
-                        });
-                        document.body.dispatchEvent(evt);
-                    } catch (e) {}
+                // Auto-tap sequence 1 sec and 2 sec after import finishes (for Safari & WebKit unmuted autoplay)
+                const triggerAutoTapSequence = (delayMs) => {
+                    setTimeout(() => {
+                        try {
+                            const clickEvt = new MouseEvent('click', {
+                                bubbles: true,
+                                cancelable: true,
+                                view: window
+                            });
+                            document.body.dispatchEvent(clickEvt);
+                        } catch (e) {}
 
-                    userHasInteracted = true;
-                    unlockMobileAudio();
+                        try {
+                            if (typeof TouchEvent !== 'undefined') {
+                                const touchEvt = new TouchEvent('touchstart', {
+                                    bubbles: true,
+                                    cancelable: true,
+                                    view: window
+                                });
+                                document.body.dispatchEvent(touchEvt);
+                            }
+                        } catch (e) {}
 
-                    const cards = document.querySelectorAll('.reel-card');
-                    const card = cards[targetReelIndex];
-                    if (card) {
-                        const v = card.querySelector('.reel-video');
-                        if (v) {
-                            v.muted = isAppMuted ? true : false;
-                            v.play().catch(() => {});
+                        userHasInteracted = true;
+                        unlockMobileAudio();
+
+                        const cards = document.querySelectorAll('.reel-card');
+                        const card = cards[targetReelIndex];
+                        if (card) {
+                            const v = card.querySelector('.reel-video');
+                            if (v) {
+                                v.muted = isAppMuted ? true : false;
+                                const p = v.play();
+                                if (p !== undefined) {
+                                    p.catch(() => {
+                                        v.muted = true;
+                                        v.play().catch(() => {});
+                                    });
+                                }
+                            }
                         }
-                    }
-                }, 1000);
+                    }, delayMs);
+                };
+
+                // Trigger at 1 second AND 2 seconds after import finishes
+                triggerAutoTapSequence(1000);
+                triggerAutoTapSequence(2000);
             }, 300);
         };
 
