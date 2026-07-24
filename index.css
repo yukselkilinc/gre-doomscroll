@@ -432,8 +432,9 @@ body.comments-open .show-badge-container {
   opacity: 1;
 }
 
-/* On Mobile: Hide word info overlay when comments drawer is active, exactly like .action-tray */
-.comments-active .word-info-overlay {
+/* Hide word info overlay when comments section is active (both mobile and PC) */
+.comments-active .word-info-overlay,
+body.comments-open .word-info-overlay {
   opacity: 0 !important;
   pointer-events: none !important;
   transform: translateX(-50px) !important;
@@ -441,12 +442,6 @@ body.comments-open .show-badge-container {
 }
 
 @media (min-width: 768px) {
-  /* On PC: Keep word info overlay visible */
-  .comments-active .word-info-overlay {
-    transform: translateX(0) !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
 
   /* Smooth transition for word-info-overlay (word, type, def, show/movie name) */
   .word-info-overlay {

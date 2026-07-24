@@ -1600,23 +1600,27 @@ function selectReelFromDashboard(index) {
     const originalBehavior = feed.style.scrollBehavior;
     feed.style.scrollBehavior = 'auto';
     
-    // Unhide feed FIRST so the browser has layout dimensions for scroll snaps
+    // Set scroll position BEFORE unhiding feed so card 0 (first reel) never flashes
+    const expectedScrollPos = targetIndex * window.innerHeight;
+    feed.scrollTop = expectedScrollPos;
+    
+    // Unhide feed now that scroll position is already at targetIndex
     feed.classList.remove('hidden');
     
-    // Set scroll position immediately to exact reel index
-    const targetCard = feed.children[currentIndex];
-    const scrollPos = targetCard ? targetCard.offsetTop : currentIndex * window.innerHeight;
+    // Fine-tune scroll position using offsetTop if layout differs slightly
+    const targetCard = feed.children[targetIndex];
+    const scrollPos = targetCard ? targetCard.offsetTop : expectedScrollPos;
     feed.scrollTop = scrollPos;
     
     // Restore smooth scroll behavior after frame paint
     requestAnimationFrame(() => {
-        feed.scrollTop = scrollPos;
+        if (targetCard) feed.scrollTop = targetCard.offsetTop;
         setTimeout(() => {
             feed.style.scrollBehavior = originalBehavior;
         }, 60);
     });
     
-    playActiveVideo(currentIndex);
+    playActiveVideo(targetIndex);
     
     setTimeout(() => {
         isProgrammaticScroll = false;
@@ -1760,6 +1764,11 @@ function pickRandomWord() {
 // name, and comments all populate exactly like any other card since the
 // matched database entry is used as-is - only the video source differs.
 function importLocalClips() {
+    // Bring bottom navbar back if hidden on PC
+    document.body.classList.remove('navbar-hidden');
+    const navbar = document.getElementById('bottom-navbar');
+    if (navbar) navbar.classList.remove('translate-y-full');
+
     const input = document.getElementById('import-clips-input');
     if (!input) return;
     input.value = '';
@@ -1920,14 +1929,24 @@ function handleLocalClipsSelected(fileList) {
             return;
         }
 
+        const wasEmpty = appData.length === 0;
         const insertAt = appData.length > 0 ? Math.min(currentIndex + 1, appData.length) : 0;
         appData.splice(insertAt, 0, ...newEntries);
+
+        const targetReelIndex = wasEmpty ? getResumeIndex() : insertAt;
+        currentIndex = targetReelIndex;
+        updateSavedReelIndex(targetReelIndex);
+        pauseAllVideos();
+
+        // Hide reels feed before DOM construction so card 0 is NEVER painted to screen
+        const feed = document.getElementById('reels-feed');
+        if (feed) feed.classList.add('hidden');
 
         renderReelsFeed();
         setImportProgress(60);
 
         const cards = document.querySelectorAll('.reel-card');
-        const targetCard = cards[insertAt];
+        const targetCard = cards[targetReelIndex];
         const video = targetCard ? targetCard.querySelector('.reel-video') : null;
 
         let isCompleted = false;
@@ -1945,7 +1964,7 @@ function handleLocalClipsSelected(fileList) {
                 showToast(msg, 'success');
 
                 currentTab = '';
-                selectReelFromDashboard(insertAt);
+                selectReelFromDashboard(targetReelIndex);
             }, 300);
         };
 
