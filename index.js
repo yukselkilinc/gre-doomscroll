@@ -275,7 +275,7 @@ function renderReelsFeed() {
         card.innerHTML = `
             <!-- Video Container -->
             <div class="reel-video-container w-full h-full relative flex items-center justify-center bg-gradient-to-b from-neutral-950 via-neutral-900 to-black overflow-hidden" onpointerdown="onCardDown(event, ${idx})" onpointerup="onCardUp(event, ${idx})">
-                <video class="reel-video" src="${videoSrc}" preload="auto" loop playsinline webkit-playsinline muted></video>
+                <video class="reel-video" data-src="${videoSrc}" preload="none" loop playsinline webkit-playsinline muted></video>
 
                 <!-- Centered Play Icon Overlay (indicates video is paused) -->
                 <div class="play-pause-overlay absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 z-20">
@@ -349,9 +349,6 @@ function renderReelsFeed() {
 
         const video = card.querySelector('.reel-video');
         const fallback = card.querySelector('.audio-fallback');
-        if (w.videoSrc && video.src !== w.videoSrc) {
-            video.src = w.videoSrc;
-        }
 
         video.addEventListener('play', () => {
             updatePlayIconVisibility(idx);
@@ -515,68 +512,64 @@ function playActiveVideo(index) {
         const video = card.querySelector('.reel-video');
         if (!video) return;
 
-        if (idx === index) {
-            if (!video.classList.contains('hidden')) {
-                video.preload = 'auto';
-                video.volume = 1.0;
-                video.muted = isAppMuted ? true : false;
+        const distance = Math.abs(idx - index);
+        const dataSrc = video.getAttribute('data-src') || (appData[idx] ? (appData[idx].videoSrc || `videos/${appData[idx].word}.mp4`) : '');
 
-                // If this reel was user-paused by tapping, do NOT auto play on return
-                if (reelPauseStates[index]) {
-                    if (!video.paused) {
-                        video.pause();
-                    }
-                    updatePlayIconVisibility(idx);
-                } else {
-                    const playPromise = video.play();
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            // If user fast-scrolled away while promise was resolving, pause immediately
-                            if (idx !== activeTargetIndex) {
-                                video.muted = true;
-                                video.pause();
-                            }
-                        }).catch(e => {
-                            if (idx === activeTargetIndex && !reelPauseStates[index]) {
-                                // If unmuted play failed due to browser policy (e.g. context switch after file picker), retry muted & attach touch unmute listener
-                                video.muted = true;
-                                const retry = video.play();
-                                if (retry !== undefined) retry.catch(() => {});
-
-                                if (!isAppMuted) {
-                                    const unmuteOnTouch = () => {
-                                        if (!isAppMuted && idx === activeTargetIndex && video) {
-                                            video.muted = false;
-                                        }
-                                        window.removeEventListener('pointerdown', unmuteOnTouch, true);
-                                        window.removeEventListener('touchstart', unmuteOnTouch, true);
-                                    };
-                                    window.addEventListener('pointerdown', unmuteOnTouch, { once: true, capture: true });
-                                    window.addEventListener('touchstart', unmuteOnTouch, { once: true, capture: true });
-                                }
-                            }
-                        });
-                    }
-                    updatePlayIconVisibility(idx);
-                }
+        if (distance <= 1) {
+            // VIRTUAL ACTIVE WINDOW: Active reel (0) or adjacent prebuffered reels (-1, +1)
+            if (dataSrc && (!video.src || video.src === '' || !video.src.includes(encodeURI(dataSrc)))) {
+                video.src = dataSrc;
+                video.load();
             }
-        } else {
-            // INACTIVE REELS: Mute immediately on frame 1 so zero audio can ever leak during fast scrolling!
-            video.muted = true;
-            if (!video.paused) {
-                video.pause();
-            }
-            updatePlayIconVisibility(idx);
 
-            if (Math.abs(idx - index) <= 2) {
-                if (video.preload !== 'auto') {
+            if (idx === index) {
+                // ACTIVE REEL
+                if (!video.classList.contains('hidden')) {
                     video.preload = 'auto';
+                    video.volume = 1.0;
+                    video.muted = isAppMuted ? true : false;
+
+                    if (reelPauseStates[index]) {
+                        if (!video.paused) video.pause();
+                        updatePlayIconVisibility(idx);
+                    } else {
+                        const playPromise = video.play();
+                        if (playPromise !== undefined) {
+                            playPromise.then(() => {
+                                if (idx !== activeTargetIndex) {
+                                    video.muted = true;
+                                    video.pause();
+                                }
+                            }).catch(e => {
+                                if (idx === activeTargetIndex && !reelPauseStates[index]) {
+                                    video.muted = true;
+                                    const retry = video.play();
+                                    if (retry !== undefined) retry.catch(() => {});
+                                }
+                            });
+                        }
+                        updatePlayIconVisibility(idx);
+                    }
                 }
             } else {
-                if (video.preload !== 'none') {
-                    video.preload = 'none';
-                }
+                // ADJACENT PREBUFFERED REELS (index - 1, index + 1)
+                video.preload = 'auto';
+                video.muted = true;
+                if (!video.paused) video.pause();
+                updatePlayIconVisibility(idx);
             }
+        } else {
+            // FAR OFFSCREEN REELS (distance > 1):
+            // Immediately mute, pause, remove src, & call video.load() to release WebKit hardware decoders & GPU RAM
+            video.muted = true;
+            if (!video.paused) video.pause();
+            updatePlayIconVisibility(idx);
+
+            if (video.hasAttribute('src') || (video.src && video.src !== '')) {
+                video.removeAttribute('src');
+                video.load(); // Forces WebKit & Blink to instantly release hardware decoder & GPU RAM
+            }
+            video.preload = 'none';
         }
     });
 
