@@ -555,8 +555,8 @@ function playActiveVideo(index) {
                         if (!video.paused) video.pause();
                         updatePlayIconVisibility(idx);
                     } else {
-                        // Reset start position if video ended or paused at offset to flush dormant audio decoder buffer
-                        if (video.ended || (video.paused && video.currentTime > 0.5)) {
+                        // Reset position ONLY if ended
+                        if (video.ended) {
                             try { video.currentTime = 0; } catch (e) {}
                         }
 
@@ -682,7 +682,7 @@ function onCardUp(e, index) {
     }
     commentsDragActive = false;
 
-    if (isImdbPopupActive || suppressNextTap || Date.now() - lastCommentsOpenTime < 400 || Date.now() - lastImdbPopupTime < 2500) {
+    if (isImdbPopupActive || suppressNextTap || Date.now() - lastCommentsOpenTime < 300 || Date.now() - lastImdbPopupTime < 200) {
         suppressNextTap = false;
         return;
     }
@@ -783,7 +783,7 @@ function openShowIMDB(e, showName) {
                 updatePlayIconVisibility(currentIndex);
             }
 
-            setTimeout(() => { suppressNextTap = false; }, 2500);
+            setTimeout(() => { suppressNextTap = false; }, 150);
         }
     }, 50);
 }
