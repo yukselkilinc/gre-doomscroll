@@ -128,15 +128,15 @@ body.comments-open .play-pause-overlay {
    -7.3vh Safari-chrome compensation shift above (previously only the video itself
    was shifted, leaving these sitting visibly lower than the video). Mobile only. */
 @media (max-width: 767px) {
-  .safari-non-webapp .action-tray {
+  .safari-non-webapp:not(.comments-open) .action-tray {
     transform: translateY(-5vh);
   }
 
-  .safari-non-webapp .word-info-overlay {
+  .safari-non-webapp:not(.comments-open) .word-info-overlay {
     transform: translateY(-5vh);
   }
 
-  .safari-non-webapp .show-badge-container {
+  .safari-non-webapp:not(.comments-open) .show-badge-container {
     transform: translateX(-50%) translateY(-5vh);
   }
 }
@@ -156,7 +156,9 @@ body.comments-open .play-pause-overlay {
   gap: 22px;
   align-items: center;
   z-index: 20;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), -webkit-transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 }
 
 /* Hide action tray and top show badge when comments drawer is active */
@@ -164,7 +166,8 @@ body.comments-open .play-pause-overlay {
 body.comments-open .action-tray {
   opacity: 0 !important;
   pointer-events: none !important;
-  transform: translateX(50px) !important;
+  -webkit-transform: translate3d(50px, 0, 0) !important;
+  transform: translate3d(50px, 0, 0) !important;
 }
 
 .show-badge-container {
@@ -427,18 +430,21 @@ body.comments-open .show-badge-container {
 
 /* Word Info Overlay Smooth Slide Transition */
 .word-info-overlay {
-  transition: opacity 0.25s ease, transform 0.25s ease, bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.35s ease;
-  transform: translateX(0);
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), -webkit-transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.35s ease;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
   opacity: 1;
+  will-change: opacity, transform;
 }
 
-/* Hide word info overlay when comments section is active (both mobile and PC) */
+/* Hide word info overlay when comments section is active (mobile Safari, PWA, and PC) */
 .comments-active .word-info-overlay,
 body.comments-open .word-info-overlay {
   opacity: 0 !important;
+  visibility: hidden !important;
   pointer-events: none !important;
-  transform: translateX(-50px) !important;
-  transition: opacity 0.25s ease, transform 0.25s ease !important;
+  -webkit-transform: translate3d(-60px, 0, 0) !important;
+  transform: translate3d(-60px, 0, 0) !important;
 }
 
 @media (min-width: 768px) {

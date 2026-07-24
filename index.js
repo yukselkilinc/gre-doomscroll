@@ -484,9 +484,13 @@ function updatePlayIconVisibility(index) {
         return;
     }
 
-    // For the currently active reel, ONLY show play icon if it is explicitly user-paused
+    // For the currently active reel, ONLY show play icon if it is explicitly user-paused (with 80ms smooth delay)
     if (reelPauseStates[index]) {
-        overlay.style.opacity = '1';
+        setTimeout(() => {
+            if (reelPauseStates[index] && index === currentIndex && !commentsOpen) {
+                overlay.style.opacity = '1';
+            }
+        }, 80);
     } else {
         overlay.style.opacity = '0';
     }
@@ -1197,6 +1201,16 @@ function openComments(e, index) {
     const card = document.querySelectorAll('.reel-card')[index];
     if (card) {
         card.classList.add('comments-active');
+        const overlay = card.querySelector('.word-info-overlay');
+        if (overlay) {
+            overlay.style.transition = 'opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
+            overlay.style.transform = 'translate3d(-60px, 0, 0)';
+            setTimeout(() => {
+                if (commentsOpen && overlay) overlay.style.visibility = 'hidden';
+            }, 220);
+        }
         const container = card.querySelector('.reel-video-container') || card.firstElementChild;
         const video = card.querySelector('.reel-video');
         const fallback = card.querySelector('.audio-fallback');
@@ -1282,27 +1296,19 @@ function closeComments() {
     const drawer = document.getElementById('comments-drawer');
     const navbar = document.getElementById('bottom-navbar');
     commentsOpen = false;
-    drawer.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
-    drawer.classList.add('translate-y-full');
-    drawer.style.transform = ''; // Clear swipe drag inline transform!
+
+    // Immediately remove comments-open & comments-active so buttons and word info return INSTANTLY with fast smooth 0.22s anim!
     document.body.classList.remove('comments-open');
-    setTimeout(() => {
-        if (!commentsOpen) {
-            drawer.style.visibility = 'hidden';
-            drawer.classList.add('invisible');
-            updatePlayIconVisibility(currentIndex);
-        }
-    }, 230);
-    
-    // Reset comments list scroll position to top
-    const content = document.getElementById('comments-content-list');
-    if (content) {
-        content.scrollTop = 0;
-    }
-    
-    // Remove smooth shift classes, inline heights, and inline transforms from all active reels
     document.querySelectorAll('.reel-card').forEach(c => {
         c.classList.remove('comments-active');
+        const overlay = c.querySelector('.word-info-overlay');
+        if (overlay) {
+            overlay.style.visibility = 'visible';
+            overlay.style.transition = 'opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = '';
+            overlay.style.transform = 'translate3d(0, 0, 0)';
+        }
         const container = c.querySelector('.reel-video-container') || c.firstElementChild;
         if (container) {
             container.style.transition = 'height 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
@@ -1310,21 +1316,39 @@ function closeComments() {
             container.style.removeProperty('max-height');
         }
         const video = c.querySelector('.reel-video');
-        const fallback = c.querySelector('.audio-fallback');
-        [video, fallback].forEach(target => {
-            if (target) {
-                target.style.transform = '';
-                target.style.transition = '';
-            }
-        });
+        if (video) {
+            video.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
+            video.style.transform = '';
+        }
     });
 
+    // Update play icon visibility immediately
+    updatePlayIconVisibility(currentIndex);
+
+    // Slide comments drawer down
+    drawer.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
+    drawer.classList.add('translate-y-full');
+    drawer.style.transform = '';
+
+    // Hide drawer element after slide animation finishes
+    setTimeout(() => {
+        if (!commentsOpen) {
+            drawer.style.visibility = 'hidden';
+            drawer.classList.add('invisible');
+        }
+    }, 220);
+
+    // Reset comments list scroll position to top
+    const content = document.getElementById('comments-content-list');
+    if (content) {
+        content.scrollTop = 0;
+    }
+
     // Restore bottom navbar view
-    commentsOpen = false;
     const isPC = window.innerWidth >= 768;
     if (isPC && currentTab === 'reels') {
         hideNavbarOnPCReels();
-    } else {
+    } else if (navbar) {
         navbar.classList.remove('translate-y-full');
     }
 
