@@ -81,7 +81,7 @@ body::-webkit-scrollbar, html::-webkit-scrollbar {
 /* Safari (non-webapp) only layout adjustments */
 .safari-non-webapp:not(.comments-open) .reel-video,
 .safari-non-webapp:not(.comments-open) .audio-fallback {
-  transform: translateY(-7.3vh);
+  transform: translateY(-12.2vh);
 }
 
 .safari-non-webapp .show-badge-container {
@@ -90,6 +90,23 @@ body::-webkit-scrollbar, html::-webkit-scrollbar {
 
 .safari-non-webapp #comments-drawer {
   max-height: 65.3vh !important;
+}
+
+/* Keep action tray, word/definition, and show-name badge aligned with the video's
+   -7.3vh Safari-chrome compensation shift above (previously only the video itself
+   was shifted, leaving these sitting visibly lower than the video). Mobile only. */
+@media (max-width: 767px) {
+  .safari-non-webapp .action-tray {
+    transform: translateY(-5vh);
+  }
+
+  .safari-non-webapp .word-info-overlay {
+    transform: translateY(-5vh);
+  }
+
+  .safari-non-webapp .show-badge-container {
+    transform: translateX(-50%) translateY(-5vh);
+  }
 }
 
 /* PWA (standalone webapp) mode layout adjustments */

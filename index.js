@@ -82,6 +82,14 @@ window.addEventListener('orientationchange', () => setTimeout(lockWindowScroll, 
 document.addEventListener('touchstart', lockWindowScroll, { passive: true });
 document.addEventListener('touchend', lockWindowScroll, { passive: true });
 
+// Prevent page-level rubber-band scroll at the source (mainly a Safari-non-webapp issue),
+// instead of only snapping back after a visible drift. Anything inside the reels feed or
+// the comments drawer is allowed to scroll/drag normally; everything else is blocked.
+document.addEventListener('touchmove', (e) => {
+    if (e.target.closest('#reels-feed, #comments-drawer, #comments-content-list')) return;
+    if (e.cancelable) e.preventDefault();
+}, { passive: false });
+
 
 
 // Initialize Database on load
@@ -1169,6 +1177,7 @@ function openComments(e, index) {
     content.innerHTML = commentsHtml || '<p class="text-sm text-slate-400 dark:text-slate-500 text-center py-6">No context available.</p>';
     
     commentsOpen = true;
+    document.body.classList.add('comments-open');
     drawer.style.visibility = 'visible';
     drawer.classList.remove('invisible');
 
@@ -1195,10 +1204,10 @@ function openComments(e, index) {
     drawer.style.transform = 'translateY(0px)';
     drawer.classList.remove('translate-y-full');
     navbar.classList.add('translate-y-full');
-    // Set comments drawer max-height dynamically: 45.5vh for PWA, 39.5vh for Safari non-webapp
+    // Set comments drawer max-height dynamically: 45.5vh for PWA, 34.9vh for Safari non-webapp
     const isPWA = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
     if (!isPC) {
-        drawer.style.setProperty('max-height', isPWA ? '45.5vh' : '39.5vh', 'important');
+        drawer.style.setProperty('max-height', isPWA ? '45.5vh' : '34.9vh', 'important');
     }
 
     // Shift active reel on PC (resizes video container height) and Mobile (translates Y)
