@@ -127,12 +127,19 @@ body::-webkit-scrollbar, html::-webkit-scrollbar {
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-/* Hide action tray and top show badge when comments drawer is active */
+/* Hide action tray, word info overlay, and top show badge when comments drawer is active */
 .comments-active .action-tray,
 body.comments-open .action-tray {
   opacity: 0 !important;
   pointer-events: none !important;
   transform: translateX(50px) !important;
+}
+
+.comments-active .word-info-overlay,
+body.comments-open .word-info-overlay {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateX(-50px) !important;
 }
 
 .show-badge-container {
@@ -180,6 +187,9 @@ body.comments-open .show-badge-container {
   z-index: 20;
   pointer-events: none;
   text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+  transition: opacity 0.25s ease, transform 0.25s ease, bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.35s ease;
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .word-info-overlay * {
@@ -393,37 +403,15 @@ body.comments-open .show-badge-container {
     object-fit: contain !important;
   }
 
-/* Word Info Overlay Smooth Slide Transition */
-.word-info-overlay {
-  transition: opacity 0.25s ease, transform 0.25s ease, bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.35s ease;
-  transform: translateX(0);
-  opacity: 1;
-}
-
-/* On Mobile: Hide word info overlay when comments drawer is active, exactly like .action-tray */
-.comments-active .word-info-overlay {
-  opacity: 0 !important;
-  pointer-events: none !important;
-  transform: translateX(-50px) !important;
-  transition: opacity 0.25s ease, transform 0.25s ease !important;
-}
-
 @media (min-width: 768px) {
-  /* On PC: Keep word info overlay visible */
-  .comments-active .word-info-overlay {
-    transform: translateX(0) !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-
   /* Smooth transition for word-info-overlay (word, type, def, show/movie name) */
   .word-info-overlay {
-    bottom: 104px;
+    bottom: 80px;
   }
 
-  /* When bottom navbar is hidden (full-size video): word, type, def, and movie name smoothly move DOWN */
+  /* When bottom navbar is hidden: word, type, def sit a little upwards initially */
   body.navbar-hidden .word-info-overlay {
-    bottom: 36px !important;
+    bottom: 48px !important;
   }
 
   /* Make heart, comments, save, and learn buttons 1.5x bigger */
