@@ -454,8 +454,9 @@ function unlockMobileAudio() {
     const cards = document.querySelectorAll('.reel-card');
     if (cards[currentIndex]) {
         const v = cards[currentIndex].querySelector('.reel-video');
-        if (v && v.muted) {
+        if (v) {
             v.muted = false;
+            v.volume = 1.0;
         }
     }
 }
@@ -538,18 +539,27 @@ function playActiveVideo(index) {
                 if (!video.classList.contains('hidden')) {
                     video.preload = 'auto';
                     video.volume = 1.0;
-                    video.muted = isAppMuted ? true : false;
+                    const targetMuted = isAppMuted ? true : false;
+                    video.defaultMuted = targetMuted;
+                    video.muted = targetMuted;
 
                     if (reelPauseStates[index]) {
                         if (!video.paused) video.pause();
                         updatePlayIconVisibility(idx);
                     } else {
+                        // Reset start position if video ended or paused at offset to flush dormant audio decoder buffer
+                        if (video.ended || (video.paused && video.currentTime > 0.5)) {
+                            try { video.currentTime = 0; } catch (e) {}
+                        }
+
                         const playPromise = video.play();
                         if (playPromise !== undefined) {
                             playPromise.then(() => {
                                 if (idx !== activeTargetIndex) {
                                     video.muted = true;
                                     video.pause();
+                                } else {
+                                    video.muted = targetMuted;
                                 }
                             }).catch(e => {
                                 if (idx === activeTargetIndex && !reelPauseStates[index]) {
@@ -740,9 +750,13 @@ function openShowIMDB(e, showName) {
             suppressNextTap = true;
 
             // iOS WebKit automatically pauses video playback during native confirm() modals.
-            // If user taps Cancel (or closes modal), explicitly resume video playback!
-            if (!userAccepted && wasPlayingBeforeModal && video) {
-                video.play().catch(() => {});
+            // When user taps Cancel (or closes modal), mark reel as explicitly paused and display play icon overlay!
+            if (!userAccepted) {
+                reelPauseStates[currentIndex] = true;
+                if (video) {
+                    video.pause();
+                }
+                updatePlayIconVisibility(currentIndex);
             }
 
             setTimeout(() => { suppressNextTap = false; }, 2500);
