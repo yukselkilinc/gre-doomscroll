@@ -54,58 +54,77 @@
 <body class="bg-black text-white antialiased overflow-hidden select-none w-screen h-screen">
 
   <!-- Main Dashboard Screen -->
-  <div id="main-screen" class="fixed inset-0 bg-neutral-950 transition-all duration-300 z-20 flex items-center justify-center">
-    <div class="text-center px-6">
-      <div class="mx-auto mb-2 flex items-center justify-center" style="height:16rem;margin-top:-1rem">
-        <svg class="text-teal-400" style="width:336px;height:336px" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <path d="M50 50 C50 42, 58 38, 62 42 C66 46, 62 54, 54 54 C44 54, 38 46, 42 38 C46 30, 58 26, 66 34 C74 42, 66 58, 52 58 C38 58, 28 44, 34 32 C40 20, 58 16, 70 28 C82 40, 70 62, 50 62 C30 62, 16 44, 24 26" />
-        </svg>
+  <div id="main-screen" class="fixed inset-0 bg-neutral-950 transition-all duration-300 z-20 flex flex-col justify-between items-center px-6 py-6 md:py-10 overflow-y-auto">
+    <!-- Top Spacer for Balance -->
+    <div class="h-2 md:h-4"></div>
+
+    <!-- Center Content Card -->
+    <div class="text-center w-full max-w-sm my-auto flex flex-col items-center">
+      <!-- App Icon from icon.svg (No glow, no background, unselectable & undraggable) -->
+      <img src="icon.svg" class="w-20 h-20 mb-4 bg-transparent select-none pointer-events-none" alt="GRE Doomscroll Icon" draggable="false">
+
+      <h1 class="text-3xl md:text-4xl font-serif font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-100 to-teal-200 mb-2 tracking-wide select-none">GRE Doomscroll</h1>
+      <p class="text-sm text-white/60 mb-7 max-w-xs leading-relaxed select-none">Swipe through GRE vocabulary reels with real TV show &amp; movie clips.</p>
+
+      <!-- Action Buttons Group -->
+      <div class="w-full flex flex-col gap-3.5 items-center">
+        <!-- Start Swiping Button -->
+        <button id="start-swiping-btn" onclick="onNavClick('reels')" class="w-full max-w-[280px] py-3.5 px-6 bg-gradient-to-r from-teal-400 to-emerald-400 text-black font-extrabold text-base rounded-full shadow-[0_4px_20px_rgba(45,212,191,0.3)] hover:shadow-[0_6px_25px_rgba(45,212,191,0.5)] hover:scale-[1.03] active:scale-[0.97] transition-all flex items-center justify-center gap-2.5">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+          Start Swiping
+        </button>
+
+        <!-- Big Stylish Import Local Clips Button -->
+        <button id="import-clips-btn" onclick="importLocalClips()" class="w-full max-w-[240px] py-2.5 px-5 bg-white/10 hover:bg-white/15 active:bg-white/20 border border-white/15 text-white font-bold text-xs rounded-full transition-all flex items-center justify-center gap-2 shadow-md backdrop-blur-md hover:scale-[1.02]">
+          <svg class="w-4 h-4 text-teal-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+          </svg>
+          Import Local Clips
+        </button>
+        <input type="file" id="import-clips-input" accept="video/*, .mp4, .mov, .m4v, .webm, .mkv, .qt, video/mp4, video/quicktime" multiple hidden>
       </div>
-      <h1 class="text-2xl font-serif font-bold text-white mb-2">GRE Doomscroll</h1>
-      <p class="text-sm text-white/50 mb-8 max-w-xs mx-auto">Swipe through vocabulary reels and master GRE words with real movie &amp; TV show clips.</p>
-      <button id="start-swiping-btn" onclick="onNavClick('reels')" class="inline-flex items-center gap-2 px-6 py-3 bg-teal-500 hover:bg-teal-400 text-black font-semibold rounded-full transition-all duration-300">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-        Start Swiping
-      </button>
-      <div class="mt-10 flex items-center justify-center gap-6 text-xs text-white/30">
-        <span id="home-stat-words" class="flex flex-col items-center gap-1"><span class="text-lg font-bold text-white/60">--</span>Words</span>
-        <span class="w-px h-8 bg-white/10"></span>
-        <span id="home-stat-learned" class="flex flex-col items-center gap-1"><span class="text-lg font-bold text-white/60">--</span>Learned</span>
-        <span class="w-px h-8 bg-white/10"></span>
-        <span id="home-stat-liked" class="flex flex-col items-center gap-1"><span class="text-lg font-bold text-white/60">--</span>Liked</span>
+
+      <!-- Stats Pill (Pushed further down below buttons) -->
+      <div class="w-full mt-10 mb-4 md:mt-12 md:mb-6 py-2.5 px-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-around text-xs text-white/40 shadow-inner select-none">
+        <span id="home-stat-words" class="flex flex-col items-center gap-0.5"><span class="text-base font-bold text-white/90">--</span>Words</span>
+        <span class="w-px h-5 bg-white/10"></span>
+        <span id="home-stat-learned" class="flex flex-col items-center gap-0.5"><span class="text-base font-bold text-white/90">--</span>Learned</span>
+        <span class="w-px h-5 bg-white/10"></span>
+        <span id="home-stat-liked" class="flex flex-col items-center gap-0.5"><span class="text-base font-bold text-white/90">--</span>Liked</span>
       </div>
-      <button id="import-clips-btn" onclick="importLocalClips()" class="import-clips-btn block mx-auto mt-6 text-xs font-medium text-white/40 transition-colors duration-200">
-        Import local clips
-      </button>
-      <input type="file" id="import-clips-input" accept="video/*, .mp4, .mov, .m4v, .webm, .mkv, .qt, video/mp4, video/quicktime" multiple hidden>
-      <a href="fair-use.html" class="inline-flex items-center gap-1.5 mt-4 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-white/50 hover:text-white/70 hover:bg-white/10 transition-all">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </div>
+
+    <!-- Bottom Footer: Fair Use Policy & ETS Disclaimer (Moved higher up on PC) -->
+    <div class="w-full max-w-sm text-center pt-3 pb-16 md:pb-8 border-t border-white/5 flex flex-col items-center gap-2 md:-translate-y-3">
+      <a href="fair-use.html" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[11px] text-white/50 hover:text-white/80 hover:bg-white/10 transition-all">
+        <svg class="w-3.5 h-3.5 text-teal-400/70" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
         </svg>
         Fair Use Policy
       </a>
-      <p class="mt-3 text-[10px] text-white/20 max-w-xs mx-auto leading-relaxed">"GRE" is a registered trademark of Educational Testing Service (ETS). This app is not affiliated with, endorsed by, or sponsored by ETS.</p>
+      <p class="text-[10px] text-white/30 leading-relaxed max-w-xs select-none">"GRE" is a registered trademark of ETS. This app is not affiliated with, endorsed by, or sponsored by ETS.</p>
     </div>
   </div>
-  <!-- Search Screen -->
-  <div id="search-screen" class="fixed inset-0 bg-neutral-950 transition-all duration-300 z-20 hidden flex items-center justify-center">
-    <div class="text-center px-6 w-full max-w-lg">
-      <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-white/10 flex items-center justify-center">
-        <svg class="w-8 h-8 text-white/40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+
+  <!-- Search Screen (Optimized for Mobile Virtual Keyboards) -->
+  <div id="search-screen" class="fixed inset-0 h-[100dvh] bg-neutral-950 transition-all duration-300 z-20 hidden flex flex-col justify-start items-center overflow-y-auto px-4 py-6 md:py-12 md:justify-center">
+    <div class="text-center w-full max-w-lg my-auto pb-16 md:pb-0">
+      <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center shadow-md">
+        <svg class="w-7 h-7 text-teal-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
         </svg>
       </div>
-      <h2 class="text-xl font-serif font-bold text-white mb-2">Search Words</h2>
-      <p class="text-sm text-white/40 mb-6">Find where a word appears in TV series and movies.<br>See real usage in context.</p>
-      <div class="relative">
-        <input id="home-search-input" type="text" placeholder="Type a GRE word..." class="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-5 pr-12 text-white placeholder-white/30 focus:outline-none focus:border-teal-500/50 text-sm">
-        <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <h2 class="text-xl font-serif font-bold text-white mb-1.5">Search Words</h2>
+      <p class="text-xs text-white/50 mb-5">Find where a word appears in TV series and movies.</p>
+      <div class="relative w-full">
+        <input id="home-search-input" type="text" placeholder="Type a GRE word..." class="w-full bg-white/5 border border-white/15 rounded-2xl py-3.5 pl-5 pr-12 text-white placeholder-white/30 focus:outline-none focus:border-teal-400 text-sm shadow-inner transition">
+        <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
         </svg>
       </div>
-      <div id="search-results-list" class="mt-4 text-left text-sm text-white/40"></div>
-      <button onclick="pickRandomWord()" class="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition text-xs font-medium">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div id="search-results-list" class="mt-4 text-left text-sm text-white/40 max-h-[45vh] overflow-y-auto pr-1"></div>
+      <button onclick="pickRandomWord()" class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 transition text-xs font-medium">
+        <svg class="w-4 h-4 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="7" height="7" rx="1"/>
           <rect x="14" y="3" width="7" height="7" rx="1"/>
           <rect x="3" y="14" width="7" height="7" rx="1"/>

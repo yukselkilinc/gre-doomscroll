@@ -449,6 +449,11 @@ body.comments-open .word-info-overlay {
 
 @media (min-width: 768px) {
 
+  /* Move show/movie badge higher up on PC reels screen */
+  .show-badge-container {
+    top: 10px !important;
+  }
+
   /* Smooth transition for word-info-overlay (word, type, def, show/movie name) */
   .word-info-overlay {
     bottom: 104px;

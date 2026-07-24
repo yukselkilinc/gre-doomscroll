@@ -287,8 +287,8 @@ function renderReelsFeed() {
                 </div>
             </div>
 
-            <!-- Top Center Movie/Show Badge (hides when comments active; original on PWA, 14px on PC, 34px on Safari browser) -->
-            <div class="show-badge-container absolute left-1/2 -translate-x-1/2 z-30 transition-all duration-200 pointer-events-auto max-w-[85vw]" style="top: ${window.innerWidth >= 768 ? '14px' : (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches ? 'calc(env(safe-area-inset-top, 16px) + 8px)' : 'calc(env(safe-area-inset-top, 16px) + 34px)')};">
+            <!-- Top Center Movie/Show Badge (hides when comments active; original on PWA, 10px on PC, 34px on Safari browser) -->
+            <div class="show-badge-container absolute left-1/2 -translate-x-1/2 z-30 transition-all duration-200 pointer-events-auto max-w-[85vw]" style="top: ${window.innerWidth >= 768 ? '10px' : (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches ? 'calc(env(safe-area-inset-top, 16px) + 8px)' : 'calc(env(safe-area-inset-top, 16px) + 34px)')};">
                 <div onclick="openShowIMDB(event, '${safeMovieName}')" class="flex items-center gap-1.5 md:gap-2 bg-black/50 backdrop-blur-md px-3.5 py-1.5 md:px-4 md:py-2 rounded-2xl md:rounded-full border border-white/15 shadow-lg hover:bg-black/70 cursor-pointer transition text-center">
                     <svg class="w-3.5 h-3.5 md:w-[15px] md:h-[15px] text-white fill-current shrink-0" viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z"/>
@@ -441,11 +441,9 @@ function toggleAudioMute(e, index) {
     if (video.muted) {
         video.muted = false;
         isAppMuted = false;
-        showToast('Sound On 🔊', 'info');
     } else {
         video.muted = true;
         isAppMuted = true;
-        showToast('Sound Muted 🔇', 'info');
     }
     updateMuteButtonIcons();
 }
@@ -1612,14 +1610,14 @@ function onNavClick(target) {
 function highlightStartSwipingButton() {
     const btn = document.getElementById('start-swiping-btn');
     if (btn) {
-        btn.classList.add('ring-4', 'ring-teal-400', 'ring-offset-2', 'ring-offset-neutral-950', 'animate-pulse', 'scale-105');
+        btn.classList.add('ring-4', 'ring-teal-300', 'shadow-[0_0_30px_rgba(45,212,191,0.8)]', 'animate-pulse', 'scale-105');
     }
 }
 
 function removeStartSwipingHighlight() {
     const btn = document.getElementById('start-swiping-btn');
     if (btn) {
-        btn.classList.remove('ring-4', 'ring-teal-400', 'ring-offset-2', 'ring-offset-neutral-950', 'animate-pulse', 'scale-105');
+        btn.classList.remove('ring-4', 'ring-teal-300', 'shadow-[0_0_30px_rgba(45,212,191,0.8)]', 'animate-pulse', 'scale-105');
     }
 }
 
@@ -1794,12 +1792,15 @@ function filterSearchWords(query) {
     resultsList.innerHTML = matches.map((w, i) => {
         const reelIdx = appData.indexOf(w);
         const movieName = w.show || w.source || "GRE-Essential";
-        return `<div onclick="selectReelFromDashboard(${reelIdx})" class="flex items-center justify-between py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition border border-white/5 mb-1">
-            <div>
-                <span class="text-white font-semibold text-sm">${w.word}</span>
-                <span class="text-white/30 text-xs ml-2">${w.type}</span>
+        return `<div onclick="selectReelFromDashboard(${reelIdx})" class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 active:bg-white/15 cursor-pointer transition border border-white/10 mb-2 min-w-0">
+            <div class="flex items-baseline gap-2 min-w-0 shrink">
+                <span class="text-white font-bold text-sm tracking-wide capitalize truncate">${w.word}</span>
+                <span class="text-teal-400/80 text-xs italic font-serif shrink-0">${w.type}</span>
             </div>
-            <span class="text-white/25 text-[11px]">${movieName}</span>
+            <div class="flex items-center gap-1 text-white/40 text-[11px] font-medium shrink-0 max-w-full truncate">
+                <svg class="w-3 h-3 text-white/30 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                <span class="truncate">${formatShowName(movieName)}</span>
+            </div>
         </div>`;
     }).join('');
 }
@@ -2021,9 +2022,17 @@ function handleLocalClipsSelected(fileList) {
                 }
                 showToast(msg, 'success');
 
-                // Navigate back to / stay on main dashboard screen after importing finishes
-                showMainDashboard();
-                highlightStartSwipingButton();
+                const isPC = window.innerWidth >= 768;
+                if (isPC) {
+                    // ON PC ONLY: Start playing the reels immediately no matter where imported from
+                    currentTab = '';
+                    reelPauseStates[targetReelIndex] = false;
+                    selectReelFromDashboard(targetReelIndex);
+                } else {
+                    // ON MOBILE ONLY: Go to / stay on main dashboard screen & highlight Start Swiping button cleanly
+                    showMainDashboard();
+                    highlightStartSwipingButton();
+                }
             }, 300);
         };
 
