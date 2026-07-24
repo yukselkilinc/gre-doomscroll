@@ -503,19 +503,22 @@ function updateAllPlayIconVisibilities() {
     });
 }
 
+let activeTargetIndex = -1;
+
 // Play active video card, pause all others, and pre-buffer nearby cards for 0ms scroll delay
 function playActiveVideo(index) {
     updateDefinitionMaxWidths();
+    activeTargetIndex = index;
     const cards = document.querySelectorAll('.reel-card');
+
     cards.forEach((card, idx) => {
         const video = card.querySelector('.reel-video');
+        if (!video) return;
 
         if (idx === index) {
-            if (video && !video.classList.contains('hidden')) {
+            if (!video.classList.contains('hidden')) {
                 video.preload = 'auto';
                 video.volume = 1.0;
-                
-                // Synchronously set muted state before play so audio and video stay in 0ms lockstep
                 video.muted = isAppMuted ? true : false;
 
                 // If this reel was user-paused by tapping, do NOT auto play on return
@@ -525,37 +528,58 @@ function playActiveVideo(index) {
                     }
                     updatePlayIconVisibility(idx);
                 } else {
-                    if (video.paused) {
-                        const playPromise = video.play();
-                        if (playPromise !== undefined) {
-                            playPromise.catch(e => {
-                                console.log("Unmuted play failed, retrying muted: ", e);
+                    const playPromise = video.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            // If user fast-scrolled away while promise was resolving, pause immediately
+                            if (idx !== activeTargetIndex) {
                                 video.muted = true;
-                                video.play().catch(() => {});
-                            });
-                        }
+                                video.pause();
+                            }
+                        }).catch(e => {
+                            if (idx === activeTargetIndex && !reelPauseStates[index]) {
+                                // If unmuted play failed due to browser policy (e.g. context switch after file picker), retry muted & attach touch unmute listener
+                                video.muted = true;
+                                const retry = video.play();
+                                if (retry !== undefined) retry.catch(() => {});
+
+                                if (!isAppMuted) {
+                                    const unmuteOnTouch = () => {
+                                        if (!isAppMuted && idx === activeTargetIndex && video) {
+                                            video.muted = false;
+                                        }
+                                        window.removeEventListener('pointerdown', unmuteOnTouch, true);
+                                        window.removeEventListener('touchstart', unmuteOnTouch, true);
+                                    };
+                                    window.addEventListener('pointerdown', unmuteOnTouch, { once: true, capture: true });
+                                    window.addEventListener('touchstart', unmuteOnTouch, { once: true, capture: true });
+                                }
+                            }
+                        });
                     }
                     updatePlayIconVisibility(idx);
                 }
             }
         } else {
-            if (video) {
-                if (!video.paused) {
-                    video.pause();
+            // INACTIVE REELS: Mute immediately on frame 1 so zero audio can ever leak during fast scrolling!
+            video.muted = true;
+            if (!video.paused) {
+                video.pause();
+            }
+            updatePlayIconVisibility(idx);
+
+            if (Math.abs(idx - index) <= 2) {
+                if (video.preload !== 'auto') {
+                    video.preload = 'auto';
                 }
-                updatePlayIconVisibility(idx);
-                if (Math.abs(idx - index) <= 2) {
-                    if (video.preload !== 'auto') {
-                        video.preload = 'auto';
-                    }
-                } else {
-                    if (video.preload !== 'none') {
-                        video.preload = 'none';
-                    }
+            } else {
+                if (video.preload !== 'none') {
+                    video.preload = 'none';
                 }
             }
         }
     });
+
     updateAllPlayIconVisibilities();
     localStorage.setItem('gre_reels_index', index);
 }
@@ -1303,11 +1327,11 @@ function closeComments() {
         c.classList.remove('comments-active');
         const overlay = c.querySelector('.word-info-overlay');
         if (overlay) {
-            overlay.style.visibility = 'visible';
-            overlay.style.transition = 'opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
-            overlay.style.opacity = '1';
-            overlay.style.pointerEvents = '';
-            overlay.style.transform = 'translate3d(0, 0, 0)';
+            overlay.style.removeProperty('visibility');
+            overlay.style.removeProperty('opacity');
+            overlay.style.removeProperty('transform');
+            overlay.style.removeProperty('pointer-events');
+            overlay.style.removeProperty('transition');
         }
         const container = c.querySelector('.reel-video-container') || c.firstElementChild;
         if (container) {
