@@ -661,8 +661,8 @@ function onCardDown(e, index) {
         return;
     }
     commentsDragActive = false;
-    if (commentsOpen || isImdbPopupActive || suppressNextTap || Date.now() - lastCommentsOpenTime < 400 || Date.now() - lastImdbPopupTime < 2500) return;
-    if (e.target.closest('button') || e.target.closest('.action-btn') || e.target.closest('.word-info-overlay') || e.target.closest('.show-badge-container') || e.target.closest('#bottom-navbar') || e.target.closest('.action-tray') || isNearActionTray(e)) return;
+    if (commentsOpen || isImdbPopupActive || suppressNextTap || Date.now() - lastCommentsOpenTime < 300 || Date.now() - lastImdbPopupTime < 200) return;
+    if (e.target.closest('button') || e.target.closest('.action-btn') || e.target.closest('.word-info-overlay') || e.target.closest('.show-badge-container') || e.target.closest('#bottom-navbar') || e.target.closest('.action-tray')) return;
 }
 
 function onCardUp(e, index) {
@@ -686,7 +686,7 @@ function onCardUp(e, index) {
         suppressNextTap = false;
         return;
     }
-    if (e.target.closest('button') || e.target.closest('.action-btn') || e.target.closest('.word-info-overlay') || e.target.closest('.show-badge-container') || e.target.closest('#bottom-navbar') || e.target.closest('#comments-drawer') || e.target.closest('.action-tray') || isPointerOverCommentsDrawer(e) || isNearActionTray(e)) return;
+    if (e.target.closest('button') || e.target.closest('.action-btn') || e.target.closest('.word-info-overlay') || e.target.closest('.show-badge-container') || e.target.closest('#bottom-navbar') || e.target.closest('#comments-drawer') || e.target.closest('.action-tray')) return;
 
     const drawer = document.getElementById('comments-drawer');
     if (drawer && !drawer.classList.contains('translate-y-full')) {
@@ -1398,7 +1398,21 @@ function closeComments() {
             video.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
             video.style.transform = '';
         }
+        setTimeout(() => {
+            if (!commentsOpen) {
+                if (container) container.style.removeProperty('transition');
+                if (video) video.style.removeProperty('transition');
+            }
+        }, 250);
     });
+
+    // Ensure navbar auto-hiding state is strictly restored on PC Reels mode
+    const isPC = window.innerWidth >= 768;
+    if (isPC && currentTab === 'reels') {
+        hideNavbarOnPCReels();
+    } else if (navbar) {
+        navbar.classList.remove('translate-y-full');
+    }
 
     // Update play icon visibility immediately
     updatePlayIconVisibility(currentIndex);
@@ -1420,14 +1434,6 @@ function closeComments() {
     const content = document.getElementById('comments-content-list');
     if (content) {
         content.scrollTop = 0;
-    }
-
-    // Restore bottom navbar view
-    const isPC = window.innerWidth >= 768;
-    if (isPC && currentTab === 'reels') {
-        hideNavbarOnPCReels();
-    } else if (navbar) {
-        navbar.classList.remove('translate-y-full');
     }
 
     // Restore reels feed scrolling
@@ -1998,6 +2004,76 @@ function handleLocalClipsSelected(fileList) {
         return;
     }
 
+    const isPC = window.innerWidth >= 768;
+
+    if (isPC) {
+        // ON PC ONLY: 0ms instant import & playback start!
+        const existingWords = new Set(appData.map(w => (w.word || '').toLowerCase()));
+        const addedBatchWords = new Set();
+        const newEntries = [];
+        const unmatched = [];
+        const duplicates = [];
+
+        files.forEach(file => {
+            const match = findWordEntryByFilename(file.name);
+            if (!match) {
+                let cleanName = String(file.name).split(/[/\\]/).pop().trim();
+                cleanName = cleanName.replace(/\.[a-zA-Z0-9]+$/gi, '').trim();
+                unmatched.push(cleanName);
+                return;
+            }
+
+            const wordLower = (match.word || '').toLowerCase();
+            if (existingWords.has(wordLower) || addedBatchWords.has(wordLower)) {
+                duplicates.push(match.word);
+                return;
+            }
+
+            addedBatchWords.add(wordLower);
+            existingWords.add(wordLower);
+            newEntries.push({
+                ...match,
+                videoSrc: URL.createObjectURL(file)
+            });
+        });
+
+        if (input) input.value = '';
+
+        if (unmatched.length > 0) {
+            showToast(`No matching word found for: ${unmatched.join(', ')}`, 'error');
+        }
+
+        if (newEntries.length === 0) {
+            if (duplicates.length > 0) {
+                showToast(`Already imported: ${duplicates.join(', ')}`, 'info');
+            }
+            return;
+        }
+
+        const wasEmpty = appData.length === 0;
+        const insertAt = appData.length > 0 ? Math.min(currentIndex + 1, appData.length) : 0;
+        appData.splice(insertAt, 0, ...newEntries);
+
+        const targetReelIndex = wasEmpty ? getResumeIndex() : insertAt;
+        reelPauseStates[targetReelIndex] = false;
+        userHasInteracted = true;
+        currentIndex = targetReelIndex;
+        updateSavedReelIndex(targetReelIndex);
+        pauseAllVideos();
+
+        renderReelsFeed();
+
+        let msg = `${newEntries.length} new clip${newEntries.length === 1 ? '' : 's'} added`;
+        if (duplicates.length > 0) {
+            msg += ` (skipped duplicate${duplicates.length === 1 ? '' : 's'}: ${duplicates.join(', ')})`;
+        }
+        showToast(msg, 'success');
+
+        currentTab = '';
+        selectReelFromDashboard(targetReelIndex);
+        return;
+    }
+
     showImportLoading(true);
     setImportProgress(20);
 
@@ -2082,17 +2158,8 @@ function handleLocalClipsSelected(fileList) {
                 }
                 showToast(msg, 'success');
 
-                const isPC = window.innerWidth >= 768;
-                if (isPC) {
-                    // ON PC ONLY: Start playing the reels immediately no matter where imported from
-                    currentTab = '';
-                    reelPauseStates[targetReelIndex] = false;
-                    selectReelFromDashboard(targetReelIndex);
-                } else {
-                    // ON MOBILE ONLY: Go to / stay on main dashboard screen & highlight Start Swiping button cleanly
-                    showMainDashboard();
-                    highlightStartSwipingButton();
-                }
+                showMainDashboard();
+                highlightStartSwipingButton();
             }, 300);
         };
 

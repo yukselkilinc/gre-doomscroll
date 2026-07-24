@@ -107,7 +107,6 @@ body::-webkit-scrollbar, html::-webkit-scrollbar {
 body.comments-open .play-pause-overlay {
   opacity: 0 !important;
   visibility: hidden !important;
-  transition: none !important;
 }
 
 /* Safari (non-webapp) only layout adjustments */
@@ -393,18 +392,32 @@ body.comments-open .show-badge-container {
     max-height: calc(47.3vh - 85px) !important;
   }
 
-  .reel-video,
-  .play-pause-overlay {
+  .reel-video {
     height: calc(100% - 64px) !important;
     margin-bottom: 64px;
     transition: height 0.3s ease-out, margin-bottom 0.3s ease-out;
   }
 
-  /* When bottom navbar is hidden in PC Reels mode, video & play overlay resize to 100% full top-to-bottom height */
-  body.navbar-hidden .reel-video,
-  body.navbar-hidden .play-pause-overlay {
+  body.navbar-hidden .reel-video {
     height: 100% !important;
     margin-bottom: 0 !important;
+  }
+
+  /* PC Play Pause Overlay: Always 100% container height; button badge scales 1.1x & shifts 15px up when bottom bar is open */
+  .play-pause-overlay {
+    height: 100% !important;
+    margin-bottom: 0 !important;
+  }
+
+  .play-pause-overlay > div {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), -webkit-transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(1.1) translateY(-15px) translateZ(0);
+    -webkit-transform: scale(1.1) translateY(-15px) translateZ(0);
+  }
+
+  body.navbar-hidden .play-pause-overlay > div {
+    transform: scale(1) translateY(0) translateZ(0) !important;
+    -webkit-transform: scale(1) translateY(0) translateZ(0) !important;
   }
 
   /* On PC: Align active card to top so 100% of video sits completely above comments drawer */
