@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Doomscroll GRE</title>
   
-  <!-- PWA Manifest & Meta Tags -->
+  <!-- Favicon & PWA Icons -->
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -51,76 +53,141 @@
 </head>
 <body class="bg-black text-white antialiased overflow-hidden select-none w-screen h-screen">
 
-  <!-- Main Dashboard Screen (Starts completely empty) -->
-  <div id="main-screen" class="fixed inset-0 bg-neutral-950 transition-all duration-300 z-20"></div>
-  <!-- Search Screen (Starts completely empty) -->
-  <div id="search-screen" class="fixed inset-0 bg-neutral-950 transition-all duration-300 z-20 hidden"></div>
+  <!-- Main Dashboard Screen -->
+  <div id="main-screen" class="fixed inset-0 bg-neutral-950 transition-all duration-300 z-20 flex items-center justify-center">
+    <div class="text-center px-6">
+      <div class="mx-auto mb-2 flex items-center justify-center" style="height:16rem;margin-top:-1rem">
+        <svg class="text-teal-400" style="width:336px;height:336px" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M50 50 C50 42, 58 38, 62 42 C66 46, 62 54, 54 54 C44 54, 38 46, 42 38 C46 30, 58 26, 66 34 C74 42, 66 58, 52 58 C38 58, 28 44, 34 32 C40 20, 58 16, 70 28 C82 40, 70 62, 50 62 C30 62, 16 44, 24 26" />
+        </svg>
+      </div>
+      <h1 class="text-2xl font-serif font-bold text-white mb-2">GRE Doomscroll</h1>
+      <p class="text-sm text-white/50 mb-8 max-w-xs mx-auto">Swipe through vocabulary reels and master GRE words with real movie &amp; TV show clips.</p>
+      <button onclick="onNavClick('reels')" class="inline-flex items-center gap-2 px-6 py-3 bg-teal-500 hover:bg-teal-400 text-black font-semibold rounded-full transition-colors">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        Start Swiping
+      </button>
+      <div class="mt-10 flex items-center justify-center gap-6 text-xs text-white/30">
+        <span id="home-stat-words" class="flex flex-col items-center gap-1"><span class="text-lg font-bold text-white/60">--</span>Words</span>
+        <span class="w-px h-8 bg-white/10"></span>
+        <span id="home-stat-learned" class="flex flex-col items-center gap-1"><span class="text-lg font-bold text-white/60">--</span>Learned</span>
+        <span class="w-px h-8 bg-white/10"></span>
+        <span id="home-stat-liked" class="flex flex-col items-center gap-1"><span class="text-lg font-bold text-white/60">--</span>Liked</span>
+      </div>
+      <button id="import-clips-btn" onclick="importLocalClips()" class="import-clips-btn block mx-auto mt-6 text-xs font-medium text-white/40 transition-colors duration-200">
+        Import local clips
+      </button>
+      <input type="file" id="import-clips-input" accept=".mp4, .mov, video/mp4, video/quicktime" multiple hidden>
+      <a href="fair-use.html" class="inline-flex items-center gap-1.5 mt-4 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-white/50 hover:text-white/70 hover:bg-white/10 transition-all">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        Fair Use Policy
+      </a>
+      <p class="mt-3 text-[10px] text-white/20 max-w-xs mx-auto leading-relaxed">"GRE" is a registered trademark of Educational Testing Service (ETS). This app is not affiliated with, endorsed by, or sponsored by ETS.</p>
+    </div>
+  </div>
+  <!-- Search Screen -->
+  <div id="search-screen" class="fixed inset-0 bg-neutral-950 transition-all duration-300 z-20 hidden flex items-center justify-center">
+    <div class="text-center px-6 w-full max-w-lg">
+      <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-white/10 flex items-center justify-center">
+        <svg class="w-8 h-8 text-white/40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+      <h2 class="text-xl font-serif font-bold text-white mb-2">Search Words</h2>
+      <p class="text-sm text-white/40 mb-6">Find where a word appears in TV series and movies.<br>See real usage in context.</p>
+      <div class="relative">
+        <input id="home-search-input" type="text" placeholder="Type a GRE word..." class="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-5 pr-12 text-white placeholder-white/30 focus:outline-none focus:border-teal-500/50 text-sm">
+        <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+      <div id="search-results-list" class="mt-4 text-left text-sm text-white/40"></div>
+      <button onclick="pickRandomWord()" class="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition text-xs font-medium">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <circle cx="17.5" cy="17.5" r="1.5" fill="currentColor"/>
+        </svg>
+        Random Word
+      </button>
+    </div>
+  </div>
 
   <!-- Main Swipe Container -->
   <main id="reels-feed" class="w-full h-full overflow-y-scroll scroll-snap-y mandatory scrollbar-none relative hidden">
     <!-- Populated dynamically by index.js -->
   </main>
 
-  <!-- Sliding Comments Drawer (Instagram Style) -->
-  <div id="comments-drawer" class="fixed inset-x-0 bottom-0 h-[45%] bg-white dark:bg-neutral-900 border-t border-slate-100 dark:border-neutral-800/80 rounded-t-2xl z-40 transform translate-y-full transition-transform duration-300 ease-out flex flex-col shadow-2xl overflow-hidden">
+  <!-- Sliding Comments Drawer -->
+  <div id="comments-drawer" class="fixed inset-x-0 bottom-0 h-auto max-h-[64vh] bg-white dark:bg-neutral-900 border-t border-slate-100 dark:border-neutral-800/80 rounded-t-2xl z-40 transform translate-y-full transition-transform duration-300 ease-out flex flex-col shadow-2xl overflow-hidden invisible">
     <!-- Drawer Handle / Drag Zone -->
-    <div id="comments-drag-handle" class="w-full pt-3 pb-1 flex justify-center cursor-grab active:cursor-grabbing shrink-0">
+    <div id="comments-drag-handle" class="w-full pt-2.5 pb-3 flex justify-center cursor-grab active:cursor-grabbing shrink-0 bg-transparent">
       <div class="w-10 h-1.5 bg-slate-300 dark:bg-neutral-700 rounded-full"></div>
     </div>
     
     <!-- Drawer Content Scroll Area -->
-    <div id="comments-content-list" class="flex-grow overflow-y-auto px-5 py-3 space-y-4">
+    <div id="comments-content-list" class="flex-grow overflow-y-auto px-4 py-2 space-y-2.5">
       <!-- Generated dynamically in index.js -->
     </div>
 
-    <!-- Instagram Persistent Bottom Comment Bar -->
-    <div class="p-3 border-t border-slate-100 dark:border-neutral-900/60 bg-white dark:bg-neutral-900 flex items-center gap-3 shrink-0 select-none">
+    <!-- Persistent Bottom Comment Bar (Padded 96px to sit completely above Mobile Safari bottom address bar & PWA home indicator) -->
+    <div class="py-3.5 px-4 border-t border-slate-100 dark:border-neutral-900/60 bg-white dark:bg-neutral-900 flex items-center gap-3 shrink-0 select-none" style="padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 84px), 96px);">
       <svg class="w-8 h-8 rounded-full bg-slate-300 dark:bg-neutral-700 text-slate-100 dark:text-neutral-500 overflow-hidden select-none shrink-0" viewBox="0 0 24 24" fill="currentColor">
-        <circle cx="12" cy="8.5" r="4.25"></circle>
-        <path d="M12 14c-5.2 0-9.5 3-9.5 7.5v.5h19v-.5c0-4.5-4.3-7.5-9.5-7.5z"></path>
+        <path d="M12 2A10 10 0 002 12a10 10 0 0010 10 10 10 0 0010-10A10 10 0 0012 2zm0 3a3.5 3.5 0 110 7 3.5 3.5 0 010-7zm0 14.2a7.2 7.2 0 01-6-3.22c.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08a7.2 7.2 0 01-6 3.22z"/>
       </svg>
       <div class="flex-grow relative flex items-center">
-        <input type="text" placeholder="Add a comment..." class="w-full bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-800 rounded-full py-1.5 pl-4 pr-12 text-xs text-slate-850 dark:text-slate-100 placeholder-slate-400 focus:outline-none" readonly onclick="showToast('Custom notes coming soon!', 'info')">
+        <input type="text" placeholder="Add a comment..." class="w-full bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-800 rounded-full py-2 pl-4 pr-12 text-xs text-slate-850 dark:text-slate-100 placeholder-slate-400 focus:outline-none" readonly onclick="showToast('Custom notes coming soon!', 'info')">
         <button class="absolute right-4 text-xs font-bold text-teal-600 hover:text-teal-700 focus:outline-none" onclick="showToast('Custom notes coming soon!', 'info')">Post</button>
       </div>
     </div>
   </div>
 
   <!-- Glassmorphism Bottom Navigation Bar -->
-  <nav id="bottom-navbar" class="fixed bottom-0 inset-x-0 h-16 bg-black/60 backdrop-blur-lg border-t border-white/10 z-30 transition-transform duration-300 ease-out flex items-center justify-around px-4 pb-safe">
-    <!-- Sliding Active Bubble -->
-    <div id="navbar-bubble" class="absolute h-12 bg-white/10 border border-white/20 rounded-full shadow-lg pointer-events-none z-0"></div>
-
-    <!-- Home Menu (Starts active - text color and zoom set dynamically via JS) -->
-    <div id="nav-btn-home" onclick="onNavClick('home')" class="w-12 h-12 flex items-center justify-center transition-all duration-200 text-white cursor-pointer z-10">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-      </svg>
+  <!-- Glassmorphism Bottom Navigation Bar -->
+  <nav id="bottom-navbar" class="fixed bottom-0 inset-x-0 h-16 bg-black/60 backdrop-blur-lg border-t border-white/10 z-30 transition-transform duration-300 ease-out grid grid-cols-5 items-center justify-items-center px-2 pb-safe">
+    <!-- Home Menu -->
+    <div id="nav-btn-home" onclick="onNavClick('home')" class="nav-btn relative w-full max-w-[72px] md:max-w-[120px] h-12 flex items-center justify-center cursor-pointer z-10 select-none">
+      <div class="nav-btn-bubble absolute inset-0 m-auto w-full max-w-[72px] md:max-w-[120px] h-10 rounded-full bg-white/10 border border-white/20 shadow-lg pointer-events-none opacity-0 scale-75"></div>
+      <div class="nav-btn-icon relative z-10 transition-all duration-200 text-white/50">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M12 2.1l9 7.2v11.7a1 1 0 01-1 1h-5v-6a1 1 0 00-1-1h-4a1 1 0 00-1 1v6H4a1 1 0 01-1-1V9.3l9-7.2z"/>
+        </svg>
+      </div>
     </div>
     
     <!-- Search -->
-    <div id="nav-btn-search" onclick="onNavClick('search')" class="w-12 h-12 flex items-center justify-center text-white/50 hover:text-white transition-all duration-200 cursor-pointer z-10">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-      </svg>
+    <div id="nav-btn-search" onclick="onNavClick('search')" class="nav-btn relative w-full max-w-[72px] md:max-w-[120px] h-12 flex items-center justify-center cursor-pointer z-10 select-none">
+      <div class="nav-btn-bubble absolute inset-0 m-auto w-full max-w-[72px] md:max-w-[120px] h-10 rounded-full bg-white/10 border border-white/20 shadow-lg pointer-events-none opacity-0 scale-75"></div>
+      <div class="nav-btn-icon relative z-10 transition-all duration-200 text-white/50">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
     </div>
 
     <!-- Reels -->
-    <div id="nav-btn-reels" onclick="onNavClick('reels')" class="w-12 h-12 flex items-center justify-center text-white/50 hover:text-white transition-all duration-200 cursor-pointer z-10">
-      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
-      </svg>
+    <div id="nav-btn-reels" onclick="onNavClick('reels')" class="nav-btn relative w-full max-w-[72px] md:max-w-[120px] h-12 flex items-center justify-center cursor-pointer z-10 select-none">
+      <div class="nav-btn-bubble absolute inset-0 m-auto w-full max-w-[72px] md:max-w-[120px] h-10 rounded-full bg-white/10 border border-white/20 shadow-lg pointer-events-none opacity-0 scale-75"></div>
+      <div class="nav-btn-icon relative z-10 transition-all duration-200 text-white/50">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9.5"/>
+          <polygon points="10,8 16,12 10,16"/>
+        </svg>
+      </div>
     </div>
 
     <!-- Send (Disabled / unselectable) -->
-    <div id="nav-btn-send" class="w-12 h-12 flex items-center justify-center text-white/20 select-none pointer-events-none z-10">
+    <div id="nav-btn-send" class="w-full max-w-[72px] md:max-w-[120px] h-12 flex items-center justify-center text-white/20 select-none pointer-events-none z-10">
       <svg class="w-6 h-6 rotate-45" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
       </svg>
     </div>
 
     <!-- Profile (Disabled / unselectable) -->
-    <div id="nav-btn-profile" class="w-12 h-12 flex items-center justify-center text-white/20 select-none pointer-events-none z-10">
+    <div id="nav-btn-profile" class="w-full max-w-[72px] md:max-w-[120px] h-12 flex items-center justify-center text-white/20 select-none pointer-events-none z-10">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
       </svg>

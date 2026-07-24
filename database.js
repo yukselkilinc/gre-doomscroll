@@ -6,7 +6,7 @@ const coreDatabase = {
             "def": "To become less intense or widespread",
             "example": "We waited for the heavy storm to abate before going outside.",
             "long_example": "Everyone huddled inside the cabin and waited anxiously for hours until the howling winter storm finally began to abate enough for them to venture safely outside again.",
-            "show": "Unknown Source"
+            "show": "Game of Thrones S4.E2 - EpName"
         },
         {
             "word": "aberrant",
@@ -22,7 +22,7 @@ const coreDatabase = {
             "def": "A state of temporary inactivity or suspension",
             "example": "The building project was held in abeyance until we received the permits.",
             "long_example": "Due to a sudden shortage of municipal funding, the long-awaited construction of the new community center was held in abeyance for nearly two years before work finally resumed.",
-            "show": "Unknown Source"
+            "show": "The Caine Mutiny"
         },
         {
             "word": "abhor",
@@ -70,7 +70,7 @@ const coreDatabase = {
             "def": "Practicing restraint, especially with food and drink",
             "example": "The doctor advised him to live an abstemious life to improve health.",
             "long_example": "Living in the mountain monastery for over thirty years, the monk led a famously abstemious life, eating only the simplest of foods and drinking nothing but plain water.",
-            "show": "Unknown Source"
+            "show": "The Bounty"
         },
         {
             "word": "accolade",
@@ -102,7 +102,7 @@ const coreDatabase = {
             "def": "The highest point of achievement or development",
             "example": "Winning the prize was the acme of his scientific career.",
             "long_example": "Winning the Olympic gold medal after sixteen years of relentless training represented, for the aging swimmer, the undeniable acme of an already remarkable and celebrated athletic career.",
-            "show": "How I Met Your Mother"
+            "show": "Magic in the Moonlight"
         },
         {
             "word": "adamant",
@@ -126,7 +126,7 @@ const coreDatabase = {
             "def": "To make something less pure by adding inferior substances",
             "example": "Some shops try to adulterate the pure honey by adding sugar syrup.",
             "long_example": "Investigators discovered that the supplier had been quietly paying workers to adulterate the olive oil with cheaper vegetable oil long before any customer complaints reached company headquarters.",
-            "show": "Unknown Source"
+            "show": "Dead Bang"
         },
         {
             "word": "adumbrate",
@@ -174,7 +174,7 @@ const coreDatabase = {
             "def": "Brisk and cheerful readiness, willingness to do something",
             "example": "She accepted the job offer with great alacrity and cheer.",
             "long_example": "New recruits were expected to complete every assigned task with genuine alacrity, and the drill sergeant made it abundantly clear that hesitation would not be tolerated during training.",
-            "show": "Unknown Source"
+            "show": "Cloud Atlas"
         },
         {
             "word": "alleviate",
@@ -230,7 +230,7 @@ const coreDatabase = {
             "def": "To gradually pay off a debt over a period of time",
             "example": "The firm will amortize the cost of the machine over five years.",
             "long_example": "By choosing to amortize the commercial mortgage over a thirty-year period, the small business owner was able to keep monthly operating costs low enough to remain profitable.",
-            "show": "Unknown Source"
+            "show": "Atlas Shrugged II: The Strike"
         },
         {
             "word": "anachronism",
@@ -246,7 +246,7 @@ const coreDatabase = {
             "def": "Similar in a way that makes clear the nature of the relationship",
             "example": "The two cases are analogous, having many similar facts.",
             "long_example": "The structure of a large corporation is often analogous to that of a complex hive, where specialized workers perform distinct roles to ensure the survival and success of the group.",
-            "show": "Unknown Source"
+            "show": "The Assassination of Jesse James by the Coward Robert Ford"
         },
         {
             "word": "anathema",
@@ -262,7 +262,7 @@ const coreDatabase = {
             "def": "Not likely to provoke offense or disagreement; inoffensive [noun: painkiller or source of comfort]",
             "example": "The speech was safe, dull, and full of anodyne comments.",
             "long_example": "Hoping to avoid political division before the upcoming election, the candidate delivered an exceptionally anodyne speech that focused on vague generalities rather than addressing the controversial economic reforms facing the nation.",
-            "show": "Unknown Source"
+            "show": "Angel and the Badman"
         },
         {
             "word": "anomaly",
@@ -326,7 +326,7 @@ const coreDatabase = {
             "def": "Approval or praise",
             "example": "The new plan received the official approbation of the board.",
             "long_example": "The young designer's innovative collection won the warm approbation of fashion critics and audiences alike, establishing her as a rising star in the competitive fashion industry.",
-            "show": "Unknown Source"
+            "show": "Husbands and Wives"
         },
         {
             "word": "appropriate",
@@ -334,7 +334,7 @@ const coreDatabase = {
             "def": "To take something for one's own use, typically without the owner's permission",
             "example": "The government voted to appropriate funds for the school.",
             "long_example": "Activists warned that the wealthy developer would try to appropriate the community garden land for commercial use if local residents did not actively protest the development plan.",
-            "show": "American Horror Story"
+            "show": "Blow"
         },
         {
             "word": "arbitrary",
@@ -374,7 +374,7 @@ const coreDatabase = {
             "def": "To claim or take something without justification",
             "example": "The director tried to arrogate the power to make all choices.",
             "long_example": "Members of the parliament warned that the prime minister was attempting to arrogate executive powers to her office that were constitutionally reserved for the judicial branch.",
-            "show": "Unknown Source"
+            "show": "Dragonslayer"
         },
         {
             "word": "articulate",
@@ -414,7 +414,7 @@ const coreDatabase = {
             "def": "Harshness or sharpness of tone, temper, or manner",
             "example": "The manager spoke with great asperity, scolding the lazy helpers.",
             "long_example": "The exhausted magistrate spoke with noticeable asperity when addressing the defense attorney, who kept interrupting the witness with repetitive and irrelevant questions during the trial.",
-            "show": "Unknown Source"
+            "show": "The World to Come"
         },
         {
             "word": "assail",
@@ -446,7 +446,7 @@ const coreDatabase = {
             "def": "To reduce the force, effect, or value of something",
             "example": "The thick walls served to attenuate the noise from the street.",
             "long_example": "Special soundproofing panels were installed along the walls of the recording studio to attenuate low-frequency vibrations and prevent external noise from disrupting the delicate recording sessions.",
-            "show": "Fringe"
+            "show": "Ghostbusters"
         },
         {
             "word": "audacious",
@@ -518,7 +518,7 @@ const coreDatabase = {
             "def": "A statement or principle that is generally accepted as true",
             "example": "It is a basic axiom that practice makes perfect.",
             "long_example": "The fundamental axiom of geometry states that a straight line is the shortest path between any two points on a flat surface, serving as the basis for many mathematical proofs.",
-            "show": "Unknown Source"
+            "show": "The Horse Soldiers"
         },
         {
             "word": "balk",
@@ -574,7 +574,7 @@ const coreDatabase = {
             "def": "Willingness to fight",
             "example": "The dictator gave a bellicose speech threatening war.",
             "long_example": "The nation's bellicose rhetoric and military maneuvers along the disputed border raised concerns among international observers that a diplomatic solution might no longer be possible to achieve peace.",
-            "show": "Unknown Source"
+            "show": "Gods and Generals"
         },
         {
             "word": "belligerent",
@@ -654,7 +654,7 @@ const coreDatabase = {
             "def": "To react angrily or defensively",
             "example": "The cats will bristle and growl when they see a dog.",
             "long_example": "The proud artist began to bristle when the gallery owner suggested that her latest paintings lacked the emotional depth and complexity of her earlier, more successful exhibitions.",
-            "show": "Black Widow"
+            "show": "Jack the Bear"
         },
         {
             "word": "brook",
@@ -718,7 +718,7 @@ const coreDatabase = {
             "def": "A false statement made to damage someone's reputation",
             "example": "The senator was targets of a school calumny printed in the papers.",
             "long_example": "The businessman filed a lawsuit against the tabloid for publishing a malicious calumny that falsely accused him of embezzling funds from the charitable foundation he had established.",
-            "show": "American Horror Story"
+            "show": "Pirates of the Caribbean: At World's End"
         },
         {
             "word": "canard",
@@ -726,7 +726,7 @@ const coreDatabase = {
             "def": "A false or unfounded story",
             "example": "The reporter exposed the rumor as a false and silly canard.",
             "long_example": "The press secretary quickly issued a statement to dismiss the rumor about the president's sudden resignation, calling the report a malicious canard created by political opponents to cause panic.",
-            "show": "Unknown Source"
+            "show": "White Noise"
         },
         {
             "word": "candid",
@@ -742,7 +742,7 @@ const coreDatabase = {
             "def": "Recognized as authoritative or standard",
             "example": "The professor assigned the canonical texts of modern literature for the course.",
             "long_example": "Although several apocryphal accounts of the war exist in local folklore, historians rely strictly on the canonical documents archived in the national library to reconstruct the timeline.",
-            "show": "Silicon Valley (2014)"
+            "show": "The Two Popes"
         },
         {
             "word": "capitulate",
@@ -774,7 +774,7 @@ const coreDatabase = {
             "def": "To criticize someone severely",
             "example": "The strict teacher decided to severely castigate the boy for fighting.",
             "long_example": "The political opposition took every opportunity to publicly castigate the current administration for its handling of the housing crisis, demanding the immediate resignation of the housing minister.",
-            "show": "Unknown Source"
+            "show": "A Quiet Passion"
         },
         {
             "word": "catalyst",
@@ -806,7 +806,7 @@ const coreDatabase = {
             "def": "Swiftness of movement",
             "example": "The runner moved with great celerity, winning the race.",
             "long_example": "The emergency rescue crew responded with remarkable celerity to the distress signal, arriving at the scene of the mountain accident in under ten minutes to locate the climbers.",
-            "show": "Unknown Source"
+            "show": "Lincoln"
         },
         {
             "word": "censure",
@@ -854,7 +854,7 @@ const coreDatabase = {
             "def": "To restrict within limits",
             "example": "The new laws will significantly circumscribe the power of the mayor.",
             "long_example": "The newly drafted constitutional charter was specifically designed to circumscribe the monarch's executive authority and grant significantly more legislative power to the democratically elected representatives of the parliament.",
-            "show": "Unknown Source"
+            "show": "Babylon 5 S5.E1 - No Compromises"
         },
         {
             "word": "circumspect",
@@ -958,7 +958,7 @@ const coreDatabase = {
             "def": "Showing a high degree of skill and flair; complete or perfect",
             "example": "The magician performed the trick with consummate skill and grace.",
             "long_example": "The legendary diplomat negotiated the complex peace treaty with consummate skill, successfully balancing the competing demands of several sovereign nations without showing any signs of visible fatigue.",
-            "show": "Brooklyn Nine-Nine"
+            "show": "Pirates of the Caribbean: On Stranger Tides"
         },
         {
             "word": "contentious",
@@ -982,7 +982,7 @@ const coreDatabase = {
             "def": "Stubbornly disobedient to authority",
             "example": "The contumacious student refused to follow the teacher's instructions and was sent to the principal's office.",
             "long_example": "The military court decided to punish the contumacious soldier, who had repeatedly refused to follow direct orders from his superior officers during the critical overseas deployment.",
-            "show": "Unknown Source"
+            "show": "Billy Budd"
         },
         {
             "word": "conundrum",
@@ -1086,7 +1086,7 @@ const coreDatabase = {
             "def": "A bad-tempered or surly person",
             "example": "The old curmudgeon complained about the noisy kids playing.",
             "long_example": "Although the old mechanic had a reputation for being a stubborn curmudgeon who rarely smiled, he was always willing to help local teenagers fix their broken bicycles.",
-            "show": "Unknown Source"
+            "show": "Late Night with the Devil"
         },
         {
             "word": "debacle",
@@ -1190,7 +1190,7 @@ const coreDatabase = {
             "def": "Lacking a plan, purpose, or enthusiasm",
             "example": "The manager gave the report a quick and desultory glance.",
             "long_example": "Instead of studying systematically for the difficult bar exam, he spent his weekend doing some desultory reading of unrelated law articles, which did little to prepare him for the test.",
-            "show": "Unknown Source"
+            "show": "CQ"
         },
         {
             "word": "deter",
@@ -1206,7 +1206,7 @@ const coreDatabase = {
             "def": "Light and delicate, almost transparent",
             "example": "The bride wore a diaphanous veil that floated gently in the breeze.",
             "long_example": "As the dancer spun gracefully across the stage under the soft spotlights, her diaphanous silk scarf floated behind her like a delicate wisp of cloud in the summer sky.",
-            "show": "Unknown Source"
+            "show": "I Spy"
         },
         {
             "word": "diatribe",
@@ -1230,7 +1230,7 @@ const coreDatabase = {
             "def": "Lack of confidence in oneself",
             "example": "The shy boy spoke with great diffidence during his presentation.",
             "long_example": "Her natural diffidence made it difficult for her to speak up in large corporate meetings, even though she often possessed the most innovative solutions to the project's problems.",
-            "show": "Unknown Source"
+            "show": "The History Boys"
         },
         {
             "word": "diffident",
@@ -1238,7 +1238,7 @@ const coreDatabase = {
             "def": "Lacking self-confidence",
             "example": "The diffident boy spoke in a very soft and quiet voice.",
             "long_example": "The diffident researcher rarely spoke during departmental seminars, preferring to let his written publications speak for themselves rather than engaging in the lively and sometimes aggressive verbal debates.",
-            "show": "Unknown Source"
+            "show": "Nothing Hill"
         },
         {
             "word": "dilatory",
@@ -1246,7 +1246,7 @@ const coreDatabase = {
             "def": "Tending to delay or procrastinate",
             "example": "The lazy clerk was fired for his status and dilatory work habits.",
             "long_example": "The project manager criticized the subcontractor's dilatory response to the safety report, warning that further delays in addressing the structural flaws would result in severe financial penalties.",
-            "show": "Unknown Source"
+            "show": "Othello"
         },
         {
             "word": "dilettante",
@@ -1310,7 +1310,7 @@ const coreDatabase = {
             "def": "Impartial, unbiased ; or not interested",
             "example": "A disinterested third party was called to arbitrate the dispute.",
             "long_example": "To resolve the long-standing boundary dispute between the two farmers, the court appointed a disinterested land surveyor who had no personal or financial ties to either family.",
-            "show": "Boardwalk Empire"
+            "show": "Oppenheimer"
         },
         {
             "word": "disparage",
@@ -1478,7 +1478,7 @@ const coreDatabase = {
             "def": "Outstandingly bad or shocking",
             "example": "The accountant made an egregious error that cost a fortune.",
             "long_example": "The aviation safety board concluded that the crash was caused by an egregious maintenance error, as technicians had completely failed to inspect the primary hydraulic fluid lines.",
-            "show": "Pirates of the Caribbean"
+            "show": "Pirates of the Caribbean: The Curse of the Black Pearl"
         },
         {
             "word": "elegy",
@@ -1486,7 +1486,7 @@ const coreDatabase = {
             "def": "A poem or song expressing sorrow or lamentation, especially for someone who has died.",
             "example": "The poet wrote a beautiful elegy mourning the loss of leader.",
             "long_example": "The poet read a moving elegy at the memorial service, capturing the quiet dignity and generosity of his deceased mentor through simple, poignant imagery that brought tears to many.",
-            "show": "Unknown Source"
+            "show": "I Could Go on Singing"
         },
         {
             "word": "elicit",
@@ -1558,7 +1558,7 @@ const coreDatabase = {
             "def": "A speech or piece of writing that praises someone or something highly",
             "example": "The poet received a glowing encomium at the literary festival for his lifetime achievements.",
             "long_example": "The distinguished professor delivered a moving encomium at the memorial service, celebrating the lifetime achievements and quiet generosity of his late colleague in the field of chemistry.",
-            "show": "Unknown Source"
+            "show": "Ned Rifle"
         },
         {
             "word": "endemic",
@@ -1574,7 +1574,7 @@ const coreDatabase = {
             "def": "To weaken or drain energy",
             "example": "The hot summer heat was enough to enervate the hikers.",
             "long_example": "The intense humidity and oppressive afternoon heat of the tropical rainforest began to enervate the exhausted explorers, slowing their daily progress toward the mountain base camp significantly.",
-            "show": "Unknown Source"
+            "show": "The Great Moment"
         },
         {
             "word": "engender",
@@ -1654,7 +1654,7 @@ const coreDatabase = {
             "def": "Being an inferior substitute or imitation",
             "example": "The shop sold cheap ersatz coffee made from roasted barley.",
             "long_example": "During the prolonged wartime blockade of the capital city, the isolated citizens had to survive on an ersatz coffee made from roasted chicory roots and dark bread stretched with sawdust.",
-            "show": "Unknown Source"
+            "show": "Gambit"
         },
         {
             "word": "erudite",
@@ -1686,7 +1686,7 @@ const coreDatabase = {
             "def": "Deserving respect",
             "example": "The charity was run by an estimable group of volunteers.",
             "long_example": "Throughout her distinguished forty-year career in public service, the respected senator earned a reputation as an estimable leader who consistently prioritized the welfare of her constituents above any partisan interests.",
-            "show": "Unknown Source"
+            "show": "The Merchant of Venice"
         },
         {
             "word": "eulogy",
@@ -1710,7 +1710,7 @@ const coreDatabase = {
             "def": "Pleasant sound [opposite: cacophony]",
             "example": "The poet selected words for their euphony and rhythm.",
             "long_example": "The meticulous composer spent several months revising the woodwind section's harmonies to achieve a perfect euphony that would soothe the listeners and elevate the entire symphonic performance to a new emotional height.",
-            "show": "Unknown Source"
+            "show": "Alexander the Last"
         },
         {
             "word": "euphoric",
@@ -1726,7 +1726,7 @@ const coreDatabase = {
             "def": "Quickly fading or disappearing",
             "example": "The rainbow was evanescent, disappearing within minutes.",
             "long_example": "The landscape artist sought to capture the evanescent beauty of the morning mist on his canvas, knowing that the rising summer sun would soon burn away the delicate fog shrouding the valley.",
-            "show": "Unknown Source"
+            "show": "Tumbledown"
         },
         {
             "word": "exacerbate",
@@ -1758,7 +1758,7 @@ const coreDatabase = {
             "def": "Critical explanation or interpretation of a text, especially a religious one",
             "example": "The scholar published a detailed exegesis of the biblical text.",
             "long_example": "The theology professor published a brilliant and highly detailed exegesis of the ancient biblical scroll, explaining how its historical context and linguistic nuances altered our understanding of early religious traditions.",
-            "show": "Unknown Source"
+            "show": "Coming Soon"
         },
         {
             "word": "exigent",
@@ -1790,7 +1790,7 @@ const coreDatabase = {
             "def": "To remove parts considered offensive or unsuitable",
             "example": "The editor had to expurgate the book for the school library.",
             "long_example": "The editorial board spent several weeks working to expurgate the controversial memoir, removing any passages that could be deemed libelous or offensive to the public before its final publication.",
-            "show": "Unknown Source"
+            "show": "Bickford Schmeckler's Cool Ideas"
         },
         {
             "word": "extant",
@@ -1806,7 +1806,7 @@ const coreDatabase = {
             "def": "Not relevant or related to the subject at hand",
             "example": "Please remove any extraneous details to make the report shorter.",
             "long_example": "The editor advised the young researcher to remove all extraneous data from the scientific paper, emphasizing that irrelevant figures only served to confuse the readers and obscure the main findings.",
-            "show": "Buffy the Vampire Slayer"
+            "show": "Breaker Morant"
         },
         {
             "word": "facetious",
@@ -1822,7 +1822,7 @@ const coreDatabase = {
             "def": "Based on a mistaken belief or misleading information",
             "example": "The report was criticized for its fallacious and incorrect data.",
             "long_example": "The scientific community rejected the researcher's final paper, pointing out that his conclusions were based on highly fallacious assumptions and poorly calibrated equipment that yielded inaccurate data.",
-            "show": "Unknown Source"
+            "show": "Whatever Works"
         },
         {
             "word": "fallow",
@@ -1878,7 +1878,7 @@ const coreDatabase = {
             "def": "Capable of producing an abundance of offspring or new growth",
             "example": "The warm climate created a highly fecund valley for crops.",
             "long_example": "The settlers chose to build their village near the delta, knowing that the fecund riverbanks would provide fertile soil for harvesting bumper crops of wheat year after year.",
-            "show": "Unknown Source"
+            "show": "Cold Comfort Farm"
         },
         {
             "word": "felicitous",
@@ -1886,7 +1886,7 @@ const coreDatabase = {
             "def": "Well-suited or appropriate",
             "example": "Choosing a sunny day for the picnic was a felicitous choice.",
             "long_example": "The speaker's choice of a humorous anecdote was a felicitous opening for the presentation, immediately capturing the audience's attention and putting the nervous guests at ease.",
-            "show": "Unknown Source"
+            "show": "Skin Deep"
         },
         {
             "word": "fervid",
@@ -1955,10 +1955,10 @@ const coreDatabase = {
         {
             "word": "fractious",
             "type": "adj.",
-            "def": "someone or something that is irritable, easily annoyed, and hard to control. It often refers to people (especially children) who complain frequently, as well as unruly groups or animals that stubbornly resist authority",
+            "def": "Irritable, easily annoyed, and hard to control. Often referring to people (especially children) who complain frequently, as well as unruly groups or animals that stubbornly resist authority",
             "example": "The fractious children began to argue over the wooden toys.",
             "long_example": "The exhausted tour guide struggled to manage the fractious group of travelers, who had been complaining about the bus schedule, hotel accommodations, and food quality all day.",
-            "show": "Unknown Source"
+            "show": "St. Trinian's"
         },
         {
             "word": "frenetic",
@@ -2030,7 +2030,7 @@ const coreDatabase = {
             "def": "Excessively talkative, especially on trivial matters",
             "example": "The garrulous host kept talking for hours during the dinner.",
             "long_example": "The exhausted passenger found himself seated next to a garrulous traveler who spent the entire four-hour flight sharing detailed, unsolicited stories about his childhood summer vacations.",
-            "show": "Unknown Source"
+            "show": "Bells Are Ringing"
         },
         {
             "word": "germane",
@@ -2126,7 +2126,7 @@ const coreDatabase = {
             "def": "Dominance of one group over others",
             "example": "The empire established its hegemony over the neighboring lands.",
             "long_example": "For centuries, the small island nation struggled to preserve its unique cultural identity and political autonomy in the shadow of a powerful neighbor that sought to establish economic hegemony over the entire region.",
-            "show": "The X-Files"
+            "show": "Bloodsuckers"
         },
         {
             "word": "heterogeneous",
@@ -2134,7 +2134,7 @@ const coreDatabase = {
             "def": "Diverse in character or content",
             "example": "The city has a highly heterogeneous population of cultures.",
             "long_example": "The metropolitan area boasted a highly heterogeneous population, with residents from dozens of countries contributing to a vibrant cultural landscape filled with diverse languages and traditions that attracted tourists worldwide.",
-            "show": "Unknown Source"
+            "show": "Antitrust"
         },
         {
             "word": "histrionic",
@@ -2238,7 +2238,7 @@ const coreDatabase = {
             "def": "Having little or no money",
             "example": "The impecunious artist could barely afford to buy paint.",
             "long_example": "Although born into an impecunious family in a neglected rural district, the ambitious scholar studied tirelessly by candlelight and eventually won a full scholarship to the university.",
-            "show": "Unknown Source"
+            "show": "Tolkien"
         },
         {
             "word": "impede",
@@ -2254,7 +2254,7 @@ const coreDatabase = {
             "def": "Unable to be upset or excited; calm",
             "example": "The imperturbable manager remained calm during the crisis.",
             "long_example": "Even when the engine caught fire mid-flight, the imperturbable pilot remained calm, systematically working through the emergency checklist to guide the aircraft to a safe emergency landing.",
-            "show": "Unknown Source"
+            "show": "Emma."
         },
         {
             "word": "impervious",
@@ -2294,7 +2294,7 @@ const coreDatabase = {
             "def": "To challenge or call into question",
             "example": "Nobody could impugn the honesty of the retired judge's career.",
             "long_example": "Although the rival scientist did not directly accuse the research team of fabricating their data, she did publicly impugn the reliability of their experimental methods during the symposium.",
-            "show": "Pirates of the Caribbean"
+            "show": "Pirates of the Caribbean: The Curse of the Black Pearl"
         },
         {
             "word": "inadvertent",
@@ -2310,7 +2310,7 @@ const coreDatabase = {
             "def": "Just begun and not fully developed",
             "example": "Our plans for the project are still in a highly inchoate stage.",
             "long_example": "While the young writer had a few inchoate ideas for a historical fantasy novel, he had not yet drafted a structured outline or developed any individual characters.",
-            "show": "Unknown Source"
+            "show": "The Grand Budapest Hotel"
         },
         {
             "word": "incipient",
@@ -2366,7 +2366,7 @@ const coreDatabase = {
             "def": "Wanting to avoid activity or exertion",
             "example": "The indolent youth spent his days lying on the sofa.",
             "long_example": "On those hot and humid midsummer afternoons, the entire household would become incredibly indolent, preferring to lounge in the shade of the porch rather than complete their chores.",
-            "show": "Unknown Source"
+            "show": "A Challange for Robin Hood"
         },
         {
             "word": "inert",
@@ -2382,7 +2382,7 @@ const coreDatabase = {
             "def": "Impossible to stop or prevent",
             "example": "The march of time is an inexorable process that nothing stops.",
             "long_example": "Despite their frantic efforts to shore up the old earthen dam, the inexorable rise of the floodwaters eventually forced the entire valley population to evacuate immediately.",
-            "show": "Unknown Source"
+            "show": "The Fault in Our Stars"
         },
         {
             "word": "infallible",
@@ -2406,7 +2406,7 @@ const coreDatabase = {
             "def": "Honest and direct, unsuspecting, trusting (unable to hide feelings or disguise true intentions)",
             "example": "The child gave an ingenuous smile and admitted he took the cookie.",
             "long_example": "Her ingenuous nature made her believe the elaborate stories told by the smooth-talking salesman, resulting in her purchasing a completely useless warranty for an exorbitant price.",
-            "show": "Deadwood"
+            "show": "Hidalgo"
         },
         {
             "word": "ingrate",
@@ -2438,7 +2438,7 @@ const coreDatabase = {
             "def": "Immoral or grossly unfair behavior",
             "example": "The reform group pledged to fight corruption and iniquity in the city government.",
             "long_example": "The crusading journalist dedicated his entire career to exposing the systemic iniquity and corruption that plagued the city's political institutions and led to the exploitation of the poor.",
-            "show": "American Horror Story"
+            "show": "The Assassination of Jesse James by the Coward Robert Ford"
         },
         {
             "word": "innocuous",
@@ -2502,7 +2502,7 @@ const coreDatabase = {
             "def": "To become accustomed to something, especially something unpleasant",
             "example": "Living in the north helped to inure him to cold weather.",
             "long_example": "The experienced humanitarian worker explained that years of operating in conflict zones would eventually inure a person to the sight of suffering, though it never entirely erased the emotional toll.",
-            "show": "Unknown Source"
+            "show": "Red Sparrow"
         },
         {
             "word": "invective",
@@ -2518,7 +2518,7 @@ const coreDatabase = {
             "def": "To persuade someone to do something by means of deception or flattery",
             "example": "The con artist tried to inveigle the tourists into buying fake art.",
             "long_example": "The smooth-talking con artist managed to inveigle the wealthy and naive widow into investing her entire life savings in a completely fictitious real estate development scheme that promised immediate and massive financial returns.",
-            "show": "The X-Files"
+            "show": "Arthur"
         },
         {
             "word": "inveterate",
@@ -2606,7 +2606,7 @@ const coreDatabase = {
             "def": "Having or showing good judgment",
             "example": "The manager made a judicious choice that saved us a lot of money.",
             "long_example": "Through a judicious allocation of the annual school budget, the principal successfully managed to purchase new laboratory equipment while keeping all art programs fully funded.",
-            "show": "Buffy the Vampire Slayer"
+            "show": "Ike: Countdown to D-Day"
         },
         {
             "word": "juxtapose",
@@ -2614,7 +2614,7 @@ const coreDatabase = {
             "def": "To place side by side for comparison or contrast",
             "example": "The gallery chose to juxtapose modern paintings with old photos.",
             "long_example": "The innovative art curator decided to juxtapose the stark black-and-white photographs of industrial decay with the vibrant, colorful canvases of modern impressionist paintings to emphasize the contrast between eras.",
-            "show": "Unknown Source"
+            "show": "Blood Fest"
         },
         {
             "word": "kindle",
@@ -2622,7 +2622,7 @@ const coreDatabase = {
             "def": "To start a fire or ignite something",
             "example": "She used dry twigs to kindle a fire in the fireplace.",
             "long_example": "The damp wood and lack of dry paper made it incredibly difficult for the shivering hikers to kindle a campfire to warm themselves in the freezing wilderness.",
-            "show": "House of Cards"
+            "show": "The Time Machine"
         },
         {
             "word": "lachrymose",
@@ -2750,7 +2750,7 @@ const coreDatabase = {
             "def": "Lightness in manner or attitude, often when inappropriate",
             "example": "Shouting at a funeral shows a complete lack of proper levity.",
             "long_example": "The junior executive's attempt to inject some humor into the somber board meeting was met with cold stares, as the directors felt such levity was highly inappropriate during a discussion about bankruptcy.",
-            "show": "Boardwalk Empire"
+            "show": "Con Air"
         },
         {
             "word": "libertine",
@@ -2758,7 +2758,7 @@ const coreDatabase = {
             "def": "A person who behaves without moral principles, especially in sexual matters",
             "example": "The wealthy libertine spent all his money on wild parties.",
             "long_example": "Although he was a brilliant poet, his reputation as a reckless libertine who ignored societal norms and squandered his inheritance on lavish, scandalous parties alienated him from high society.",
-            "show": "Mad Men"
+            "show": "Casanova"
         },
         {
             "word": "limpid",
@@ -2766,7 +2766,7 @@ const coreDatabase = {
             "def": "Clear and transparent",
             "example": "The divers swam in the clear, limpid waters of the bay.",
             "long_example": "The travelers were delighted to find that the remote mountain lake possessed limpid water, so clear that they could easily see the smooth, colorful pebbles resting on the lakebed far below.",
-            "show": "Unknown Source"
+            "show": "North Sea Hijack"
         },
         {
             "word": "lionize",
@@ -2774,7 +2774,7 @@ const coreDatabase = {
             "def": "To treat someone as a celebrity",
             "example": "The media began to lionize the young hero after his rescue.",
             "long_example": "It is common for the media to suddenly lionize ordinary citizens who perform heroic acts, thrusting them into the national spotlight and inviting them onto numerous television talk shows.",
-            "show": "Unknown Source"
+            "show": "The Town"
         },
         {
             "word": "livid",
@@ -2806,7 +2806,7 @@ const coreDatabase = {
             "def": "Looking or sounding sad and dismal",
             "example": "The room was filled with a highly sad and lugubrious music.",
             "long_example": "As the rain poured down on the cemetery, the mourners listened to the lugubrious melody played by a solo cellist, which perfectly expressed the profound sorrow of the occasion.",
-            "show": "Unknown Source"
+            "show": "Dangerous Parking"
         },
         {
             "word": "lumber",
@@ -2934,7 +2934,7 @@ const coreDatabase = {
             "def": "Not telling the truth",
             "example": "The witness was sent to jail for his mendacious statements.",
             "long_example": "The corporate executive's mendacious statements regarding the company's long-term financial health were eventually exposed when an independent audit revealed millions of dollars in previously unrecorded debts.",
-            "show": "House M.D."
+            "show": "The Spider Woman"
         },
         {
             "word": "mendicant",
@@ -2942,7 +2942,7 @@ const coreDatabase = {
             "def": "A person who lives by begging [adj. mendicant]",
             "example": "The mendicant sat on the church steps, asking for spare change.",
             "long_example": "Every morning, the elderly mendicant sat patiently near the entrance of the cathedral, hoping that the wealthy churchgoers would offer him enough charity to purchase a hot meal.",
-            "show": "Unknown Source"
+            "show": "Riverworld"
         },
         {
             "word": "mercurial",
@@ -2950,7 +2950,7 @@ const coreDatabase = {
             "def": "Characterized by rapid and unpredictable changes in mood or behavior.",
             "example": "The actor was famous for his highly mercurial mood changes.",
             "long_example": "Working for such a mercurial director was extremely stressful because his mood could change from friendly to furious over a single typo in a routine report.",
-            "show": "Lucifer"
+            "show": "Limitless"
         },
         {
             "word": "meretricious",
@@ -3022,7 +3022,7 @@ const coreDatabase = {
             "def": "In a state of dying or near death",
             "example": "The old factory was a moribund business that closed soon.",
             "long_example": "The administration introduced a series of aggressive economic reforms in a desperate attempt to revive the moribund manufacturing sector, which had been suffering from decades of severe underinvestment and neglect.",
-            "show": "Unknown Source"
+            "show": "Pirates of the Caribbean: On Stranger Tides"
         },
         {
             "word": "morose",
@@ -3046,7 +3046,7 @@ const coreDatabase = {
             "def": "Very generous",
             "example": "The wealthy donor made a highly munificent contribution to the hospital.",
             "long_example": "The historic museum was able to construct a state-of-the-art exhibition hall entirely due to the munificent financial support of a wealthy local benefactor who wished to remain anonymous.",
-            "show": "Unknown Source"
+            "show": "Lady on a Train"
         },
         {
             "word": "myopic",
@@ -3070,7 +3070,7 @@ const coreDatabase = {
             "def": "The lowest point in a situation or condition.",
             "example": "The company's profits reached their nadir during the recession.",
             "long_example": "After months of public scandals and declining support, the politician's once-promising career reached its nadir when even his closest advisers resigned and openly joined his rival's campaign.",
-            "show": "Unknown Source"
+            "show": "Unfaithfully Yours"
         },
         {
             "word": "naive",
@@ -3086,7 +3086,7 @@ const coreDatabase = {
             "def": "Just beginning to exist or develop",
             "example": "The tech startup is still in its early, nascent stage.",
             "long_example": "The firm decided to invest heavily in the nascent artificial intelligence market, betting that early adoption of these developmental tools would yield massive returns in the coming decade.",
-            "show": "Sherlock"
+            "show": "Cloud Atlas"
         },
         {
             "word": "nebulous",
@@ -3110,7 +3110,7 @@ const coreDatabase = {
             "def": "A person who is new to a subject, skill, or belief",
             "example": "As a chess neophyte, he lost his first match in minutes.",
             "long_example": "The trading seminar was specifically designed to guide the complete financial neophyte through the complexities of the stock market, explaining basic terms without using confusing industry jargon.",
-            "show": "Unknown Source"
+            "show": "Django Unchained"
         },
         {
             "word": "nettle",
@@ -3182,7 +3182,7 @@ const coreDatabase = {
             "def": "Excessively eager to please or obey",
             "example": "The obsequious clerk was always bowing to the manager.",
             "long_example": "Hoping to secure a rapid promotion, the obsequious assistant constantly flattered his manager and agreed with every single proposal, regardless of how impractical it actually was.",
-            "show": "Game of Thrones"
+            "show": "Rounders"
         },
         {
             "word": "obstinate",
@@ -3222,7 +3222,7 @@ const coreDatabase = {
             "def": "To block or stop up an opening or passage.",
             "example": "The blood clot threatened to occlude the flow of blood.",
             "long_example": "The mechanical engineer warned that a buildup of rust and debris could dangerously occlude the emergency drainage pipe, leading to catastrophic flooding in the facility.",
-            "show": "Unknown Source"
+            "show": "City of Angels"
         },
         {
             "word": "occult",
@@ -3454,7 +3454,7 @@ const coreDatabase = {
             "def": "Expressing disapproval or belittlement (esp. a word)",
             "example": "He used a pejorative term to mock his rival's work.",
             "long_example": "The political commentator's critique was criticized for its pejorative tone, as he chose to mock the senator's physical mannerisms rather than engage with the complex policy proposals.",
-            "show": "Lucifer"
+            "show": "Last Looks"
         },
         {
             "word": "pellucid",
@@ -3494,7 +3494,7 @@ const coreDatabase = {
             "def": "Deceitful and untrustworthy.",
             "example": "The traitor was shot for his perfidious acts of treason.",
             "long_example": "The general was shocked to learn that his most trusted advisor was actually a perfidious agent who had been sharing confidential battle plans with the enemy for months.",
-            "show": "Doctor Who"
+            "show": "Pirates of the Caribbean: At World's End"
         },
         {
             "word": "perfunctory",
@@ -3590,7 +3590,7 @@ const coreDatabase = {
             "def": "Having an unemotional and calm disposition",
             "example": "The phlegmatic driver remained calm during the car crash.",
             "long_example": "While other passengers began to panic and shout during the severe turbulence, the phlegmatic traveler quietly closed his book and waited calmly for the pilot to stabilize the aircraft.",
-            "show": "Unknown Source"
+            "show": "Metamorphosis"
         },
         {
             "word": "pine",
@@ -3710,7 +3710,7 @@ const coreDatabase = {
             "def": "A strong verbal or written attack on someone or something",
             "example": "The critic published a fierce polemic attacking the new play.",
             "long_example": "The editor published a fierce polemic targeting the mayor's new tax plan, arguing that it would disproportionately harm working-class families who were already struggling under the current economic conditions.",
-            "show": "Unknown Source"
+            "show": "Heartbreakers"
         },
         {
             "word": "ponderous",
@@ -3822,7 +3822,7 @@ const coreDatabase = {
             "def": "To speak or act in an evasive way",
             "example": "The suspect chose to prevaricate rather than give a direct answer.",
             "long_example": "When pressed by reporters about the source of the campaign funds, the politician chose to prevaricate rather than give a direct and honest answer that might damage his reelection campaign.",
-            "show": "Unknown Source"
+            "show": "Hornblower: Mutiny"
         },
         {
             "word": "pristine",
@@ -3886,7 +3886,7 @@ const coreDatabase = {
             "def": "Given, produced, or existing in large amounts",
             "example": "The garden was filled with a profuse growth of spring flowers.",
             "long_example": "Despite the host's profuse apologies for the sudden power outage, the guests remained visibly annoyed by the disruption of what was supposed to be a flawless gala.",
-            "show": "Unknown Source"
+            "show": "Topsy-Turvy"
         },
         {
             "word": "proliferate",
@@ -3926,7 +3926,7 @@ const coreDatabase = {
             "def": "To appease or pacify someone, especially by giving them what they want",
             "example": "The tribe offered gifts to propitiate the angry gods.",
             "long_example": "The diplomat offered major trade concessions in a desperate attempt to propitiate the hostile nation, hoping to avoid a devastating war that would destabilize the region.",
-            "show": "Unknown Source"
+            "show": "Sodom and Gomorrah"
         },
         {
             "word": "propitious",
@@ -3942,7 +3942,7 @@ const coreDatabase = {
             "def": "Conforming to accepted standards of behavior or morals",
             "example": "You must behave with a sense of proper propriety in court.",
             "long_example": "Although the atmosphere at the political gala was tense, both candidates behaved with absolute propriety, greeting each other politely before taking their seats at the table.",
-            "show": "House of the Dragon"
+            "show": "Pirates of the Caribbean: The Curse of the Black Pearl"
         },
         {
             "word": "prosaic",
@@ -3998,7 +3998,7 @@ const coreDatabase = {
             "def": "Great power or influence",
             "example": "The king was respected for his military power and puissance.",
             "long_example": "The rising political party demonstrated its growing electoral puissance by winning several key districts that had been held by the opposition for more than three decades.",
-            "show": "Unknown Source"
+            "show": "The Chronicle History of King Henry the Fifth with His Battell Fought at Agincourt in France"
         },
         {
             "word": "pungent",
@@ -4142,7 +4142,7 @@ const coreDatabase = {
             "def": "To go back on a promise or agreement",
             "example": "The developer decided to renege on his agreement to build.",
             "long_example": "Despite having signed the preliminary agreement, the developers decided to renege on their promise to build a new public park, causing widespread outrage among the local residents.",
-            "show": "Deadwood"
+            "show": "Pirates of the Caribbean: At World's End"
         },
         {
             "word": "replete",
@@ -4206,7 +4206,7 @@ const coreDatabase = {
             "def": "Unable to keep still or silent, becoming difficult to control; impatient",
             "example": "The crowd grew restive as they waited for the show to start.",
             "long_example": "As the flight delay dragged on for a third hour without any announcement from the airline staff, the passengers in the terminal grew increasingly restive, muttering and pacing near the gate.",
-            "show": "Doctor Who"
+            "show": "The Blue Max"
         },
         {
             "word": "reticent",
@@ -4334,7 +4334,7 @@ const coreDatabase = {
             "def": "Optimistic or positive, especially in a difficult situation",
             "example": "The manager remained sanguine about the company's future sales.",
             "long_example": "Despite the devastating quarterly loss and the departure of several key executives, the CEO remained remarkably sanguine about the company's long-term prospects, pointing to their upcoming product line as a source of future growth.",
-            "show": "American Horror Story"
+            "show": "Firefly S1.E5 - Out of Gas"
         },
         {
             "word": "sardonic",
@@ -4350,7 +4350,7 @@ const coreDatabase = {
             "def": "Very careful and thorough",
             "example": "The accountant checked the sales records with scrupulous care.",
             "long_example": "The senior museum curator was scrupulous in her detailed documentation of the ancient artifacts, carefully recording even the smallest surface scratches and discolorations in the official registry.",
-            "show": "Doctor Who"
+            "show": "Brazil"
         },
         {
             "word": "scurvy",
@@ -4406,7 +4406,7 @@ const coreDatabase = {
             "def": "Showing concern or care for someone's health, happiness, etc.",
             "example": "The host was highly solicitous, checking if we needed drinks.",
             "long_example": "The nurse was exceptionally solicitous of the elderly patient's comfort, regularly adjusting the pillows, offering warm blankets, and checking his vitals throughout the long, cold night.",
-            "show": "Breaking Bad"
+            "show": "Infamous"
         },
         {
             "word": "soporific",
@@ -4494,7 +4494,7 @@ const coreDatabase = {
             "def": "Extremely loud and powerful voice",
             "example": "The captain gave his commands in a stentorian voice that could be heard over the storm.",
             "long_example": "The sergeant's stentorian voice echoed across the noisy parade ground, easily cutting through the sound of marching boots and barking dogs to deliver instructions to the new recruits.",
-            "show": "Unknown Source"
+            "show": "The Contender"
         },
         {
             "word": "stigma",
@@ -4510,7 +4510,7 @@ const coreDatabase = {
             "def": "To specify a condition or requirement (exactly how something must be done or to demand a requirement as part of a formal agreement, contract, or rule)",
             "example": "The contract rules stipulate that the work must finish soon.",
             "long_example": "The terms of the peace treaty explicitly stipulate that both countries must immediately withdraw their armed forces from the disputed border zone to prevent any further military escalations.",
-            "show": "Deadwood"
+            "show": "Frost/Nixon"
         },
         {
             "word": "stolid",
@@ -4518,7 +4518,7 @@ const coreDatabase = {
             "def": "Showing little or no emotion",
             "example": "The stolid guard showed no emotion when the crowd shouted.",
             "long_example": "The detective maintained a stolid demeanor throughout the intense interrogation, refusing to show any anger or surprise even when the suspect confessed to committing the high-profile bank robbery.",
-            "show": "Succession"
+            "show": "A Room with a View"
         },
         {
             "word": "stratagem",
@@ -4638,7 +4638,7 @@ const coreDatabase = {
             "def": "To delay the formal discussion of a subject until later",
             "example": "The committee decided to table the proposal until the next monthly meeting.",
             "long_example": "Due to the sudden lack of consensus and missing financial figures, the city council voted to table the discussion on the new public infrastructure project until next month's legislative session.",
-            "show": "American Horror Story"
+            "show": "Captain America: The Winter Soldier"
         },
         {
             "word": "tacit",
@@ -4646,7 +4646,7 @@ const coreDatabase = {
             "def": "Understood without being openly expressed",
             "example": "There was a tacit agreement to avoid the controversial topic.",
             "long_example": "Although no formal contract was ever signed between the two business partners, they had a tacit agreement to share the profits from their joint venture equally.",
-            "show": "Buffy the Vampire Slayer"
+            "show": "He's Just Not That Into You"
         },
         {
             "word": "taciturn",
@@ -4750,7 +4750,7 @@ const coreDatabase = {
             "def": "A state of physical or mental inactivity",
             "example": "The hot afternoon sun caused a state of general torpor in office.",
             "long_example": "The long, boring lecture on ancient economic theory induced a state of deep torpor in the students, many of whom began to nod off in the warm classroom.",
-            "show": "Unknown Source"
+            "show": "Whatever Works"
         },
         {
             "word": "tortuous",
@@ -4766,7 +4766,7 @@ const coreDatabase = {
             "def": "Easily managed or controlled",
             "example": "The horses were gentle and highly tractable for the riders.",
             "long_example": "Although the wild stallion had initially resisted any attempts at human contact, it gradually became tractable under the gentle guidance of the patient trainer who worked with it daily.",
-            "show": "Shutter Island"
+            "show": "Flash Gordon"
         },
         {
             "word": "transient",
@@ -4782,7 +4782,7 @@ const coreDatabase = {
             "def": "Lasting for a very short time",
             "example": "The beauty of the spring flowers is highly transitory and short-lived.",
             "long_example": "The philosopher reminded his students that human beauty and worldly wealth are ultimately transitory gifts that fade quickly with the inevitable and relentless passage of time over the long years.",
-            "show": "Game of Thrones"
+            "show": "Shang-Chi and the Legend of the Ten Rings"
         },
         {
             "word": "travesty",
@@ -4838,7 +4838,7 @@ const coreDatabase = {
             "def": "Swollen and distended",
             "example": "The injured ankle became turgid and swollen after the fall.",
             "long_example": "The local emergency management agency warned residents living near the river that the turgid waters were expected to overflow the stone levees before the morning tide.",
-            "show": "The Crown"
+            "show": "Fear and Loathing in Las Vegas"
         },
         {
             "word": "turpitude",
@@ -4902,7 +4902,7 @@ const coreDatabase = {
             "def": "Leaving no doubt; clear and unambiguous",
             "example": "The manager gave an unequivocal yes to our proposal.",
             "long_example": "The company's board of directors issued an unequivocal statement to the press confirming that the chief executive officer had been dismissed for violating the firm's strict code of conduct.",
-            "show": "Prison Break"
+            "show": "Murder Mystery 2"
         },
         {
             "word": "unprecedented",
@@ -4990,7 +4990,7 @@ const coreDatabase = {
             "def": "Using more words than necessary",
             "example": "Please edit the report to make it less verbose and shorter.",
             "long_example": "The professor's verbose lecture on organic chemistry went far over the scheduled time limit, leaving the exhausted students completely confused by the overly complex explanations of basic concepts.",
-            "show": "American Horror Story"
+            "show": "Con Air"
         },
         {
             "word": "vestige",
@@ -5022,7 +5022,7 @@ const coreDatabase = {
             "def": "Extremely severe or harmful in its effects",
             "example": "The virus was a highly virulent strain that spread rapidly.",
             "long_example": "The medical researchers worked around the clock in the secure laboratory to develop a vaccine against the virulent strain of influenza that was rapidly spreading through the global population.",
-            "show": "Doctor Who"
+            "show": "Twelve Monkeys"
         },
         {
             "word": "vitiate",
@@ -5030,7 +5030,7 @@ const coreDatabase = {
             "def": "To impair or spoil the quality or efficiency of something; or to make it legally invalid",
             "example": "The technical error will completely vitiate the results of the test.",
             "long_example": "The legal expert warned that failing to document the chain of custody for the evidence would completely vitiate the prosecution's case, potentially allowing the guilty defendant to go free.",
-            "show": "Unknown Source"
+            "show": "Nothing But the Truth"
         },
         {
             "word": "vitriolic",
@@ -5038,7 +5038,7 @@ const coreDatabase = {
             "def": "Filled with bitter criticism or malice",
             "example": "The critic wrote a highly vitriolic review of the bad play.",
             "long_example": "The debate devolved into a series of vitriolic personal attacks, with both candidates completely ignoring the policy questions to hurl insults and accusations at one another before the audience.",
-            "show": "Unknown Source"
+            "show": "Irrational Man"
         },
         {
             "word": "vituperate",
@@ -5046,7 +5046,7 @@ const coreDatabase = {
             "def": "To criticize harshly",
             "example": "The director began to loudly vituperate the lazy actors.",
             "long_example": "It was unprofessional of the director to vituperate his subordinates in public, especially when the minor administrative error could have been easily corrected with a quiet, private conversation.",
-            "show": "Unknown Source"
+            "show": "The White River Kid"
         },
         {
             "word": "vociferous",
@@ -5078,7 +5078,7 @@ const coreDatabase = {
             "def": "Having an extremely strong appetite or desire for something",
             "example": "As a voracious reader, she finished three books in one weekend.",
             "long_example": "As a voracious reader of historical biographies, she spent almost all of her free time exploring the dusty shelves of the university library to find rare, out-of-print memoirs.",
-            "show": "House of Cards"
+            "show": "Mansfield Park"
         },
         {
             "word": "wan",
@@ -5163,4 +5163,107 @@ const coreDatabase = {
     ]
 };
 
-const VIDEO_WORDS_SET = new Set(["abeyance", "abstemious", "acme", "adulterate", "alacrity", "amortize", "analogous", "anodyne", "approbation", "appropriate", "arrogate", "asperity", "attenuate", "axiom", "bellicose", "bristle", "calumny", "canard", "canonical", "castigate", "celerity", "circumscribe", "consummate", "contumacious", "curmudgeon", "desultory", "diaphanous", "diffidence", "diffident", "dilatory", "disinterested", "egregious", "elegy", "encomium", "enervate", "ersatz", "estimable", "euphony", "evanescent", "exegesis", "expurgate", "extraneous", "fallacious", "fecund", "felicitous", "fortuitous", "fractious", "garrulous", "hegemony", "heterogeneous", "impecunious", "imperturbable", "impugn", "inchoate", "indolent", "inexorable", "ingenuous", "iniquity", "inure", "inveigle", "judicious", "juxtapose", "kindle", "levity", "libertine", "limpid", "lionize", "lugubrious", "mendacious", "mendicant", "mercurial", "moribund", "munificent", "nadir", "nascent", "neophyte", "obsequious", "occlude", "pejorative", "perfidious", "phlegmatic", "polemic", "prevaricate", "profuse", "propitiate", "propriety", "puissance", "renege", "restive", "sanguine", "scrupulous", "solicitous", "stentorian", "stipulate", "stolid", "table", "tacit", "torpor", "tractable", "transitory", "turgid", "unequivocal", "verbose", "virulent", "vitiate", "vitriolic", "vituperate", "voracious"]);
+const VIDEO_WORDS_SET = new Set(["calumny", "consummate", "egregious", "impugn", "moribund", "perfidious", "propriety", "renege", "appropriate", "adulterate", "abeyance", "abstemious", "acme", "alacrity", "amortize", "analogous", "anodyne", "approbation", "arrogate", "asperity", "attenuate", "axiom", "bellicose", "bristle", "canard", "canonical", "castigate", "celerity", "circumscribe", "contumacious", "curmudgeon", "desultory", "diaphanous", "diffidence", "diffident", "dilatory", "disinterested", "elegy", "encomium", "enervate", "ersatz", "estimable", "euphony", "evanescent", "exegesis", "expurgate", "extraneous", "fallacious", "fecund", "felicitous", "fortuitous", "fractious", "garrulous", "hegemony", "heterogeneous", "impecunious", "imperturbable", "inchoate", "indolent", "inexorable", "ingenuous", "iniquity", "inure", "inveigle", "judicious", "juxtapose", "kindle", "levity", "libertine", "limpid", "lionize", "lugubrious", "mendacious", "mendicant", "mercurial", "munificent", "nadir", "nascent", "neophyte", "obsequious", "occlude", "pejorative", "phlegmatic", "polemic", "prevaricate", "profuse", "propitiate", "puissance", "restive", "sanguine", "scrupulous", "solicitous", "stentorian", "stipulate", "stolid", "table", "tacit", "torpor", "tractable", "transitory", "turgid", "unequivocal", "verbose", "virulent", "vitiate", "vitriolic", "vituperate", "voracious"]);
+
+const IMDB_SHOW_LINKS = {
+  "Game of Thrones": "tt0944947",
+  "The Caine Mutiny": "tt0046816",
+  "The Bounty": "tt0086993",
+  "Magic in the Moonlight": "tt2870756",
+  "Dead Bang": "tt0097166",
+  "Cloud Atlas": "tt1371111",
+  "Atlas Shrugged II: The Strike": "tt1985017",
+  "The Assassination of Jesse James by the Coward Robert Ford": "tt0443680",
+  "Angel and the Badman": "tt39850240",
+  "Husbands and Wives": "tt0104466",
+  "Blow": "tt0221027",
+  "Dragonslayer": "tt0082288",
+  "The World to Come": "tt9738716",
+  "Ghostbusters": "tt1289401",
+  "The Horse Soldiers": "tt0052902",
+  "Gods and Generals": "tt0279111",
+  "Jack the Bear": "tt0107247",
+  "Pirates of the Caribbean: At World's End": "tt0449088",
+  "White Noise": "tt6160448",
+  "The Two Popes": "tt8404614",
+  "A Quiet Passion": "tt2392830",
+  "Lincoln": "tt0443272",
+  "Babylon 5 S5.E1 - No Compromises": "tt0517673",
+  "Pirates of the Caribbean: On Stranger Tides": "tt1298650",
+  "Billy Budd": "tt0055796",
+  "Late Night with the Devil": "tt14966898",
+  "CQ": "tt0254199",
+  "I Spy": "tt0297181",
+  "The History Boys": "tt0464049",
+  "Nothing Hill": "tt0125439",
+  "Othello": "tt0114057",
+  "Oppenheimer": "tt15398776",
+  "Pirates of the Caribbean: The Curse of the Black Pearl": "tt0325980",
+  "I Could Go on Singing": "tt0057168",
+  "Ned Rifle": "tt2925768",
+  "The Great Moment": "tt0036880",
+  "Gambit": "tt0404978",
+  "The Merchant of Venice": "tt0379889",
+  "Alexander the Last": "tt1308094",
+  "Tumbledown": "tt2338424",
+  "Coming Soon": "tt0150176",
+  "Bickford Schmeckler's Cool Ideas": "tt0421045",
+  "Breaker Morant": "tt0080310",
+  "Whatever Works": "tt1178663",
+  "Cold Comfort Farm": "tt0112701",
+  "Skin Deep": "tt0098343",
+  "Django Unchained": "tt1853728",
+  "St. Trinian's": "tt0964587",
+  "Bells Are Ringing": "tt0053645",
+  "Bloodsuckers": "tt0430926",
+  "Antitrust": "tt0218817",
+  "Tolkien": "tt3361792",
+  "Emma.": "tt9214832",
+  "The Grand Budapest Hotel": "tt2278388",
+  "A Challange for Robin Hood": "tt0062787",
+  "The Fault in Our Stars": "tt2582846",
+  "Hidalgo": "tt0317648",
+  "Deadwood": "tt0348914",
+  "Red Sparrow": "tt2873282",
+  "Arthur": "tt1334512",
+  "Ike: Countdown to D-Day": "tt0401504",
+  "Blood Fest": "tt7208564",
+  "The Time Machine": "tt0054387",
+  "Con Air": "tt0118880",
+  "Casanova": "tt0402894",
+  "North Sea Hijack": "tt0081809",
+  "The Town": "tt0840361",
+  "Dangerous Parking": "tt0417586",
+  "The Spider Woman": "tt0037303",
+  "Riverworld": "tt1419950",
+  "Limitless": "tt1219289",
+  "Lady on a Train": "tt0037859",
+  "Unfaithfully Yours": "tt0040919",
+  "Rounders": "tt0128442",
+  "City of Angels": "tt0120632",
+  "Last Looks": "tt9244554",
+  "Metamorphosis": "tt0097874",
+  "Heartbreakers": "tt0087397",
+  "Hornblower: Mutiny": "tt0273656",
+  "Topsy-Turvy": "tt0151568",
+  "Sodom and Gomorrah": "tt0056504",
+  "The Chronicle History of King Henry the Fifth with His Battell Fought at Agincourt in France": "tt0036910",
+  "The Blue Max": "tt0060177",
+  "Firefly S1.E5 - Out of Gas": "tt0579533",
+  "Brazil": "tt0088846",
+  "Infamous": "tt0420609",
+  "The Contender": "tt0208874",
+  "Frost/Nixon": "tt0870111",
+  "A Room with a View": "tt0091867",
+  "Captain America: The Winter Soldier": "tt1843866",
+  "He's Just Not That Into You": "tt1001508",
+  "Flash Gordon": "tt0080745",
+  "Shang-Chi and the Legend of the Ten Rings": "tt9376612",
+  "Fear and Loathing in Las Vegas": "tt0120669",
+  "Murder Mystery 2": "tt15255288",
+  "Twelve Monkeys": "tt0114746",
+  "Nothing But the Truth": "tt1073241",
+  "Irrational Man": "tt3715320",
+  "The White River Kid": "tt0162766",
+  "Mansfield Park": "tt0178737"
+};
