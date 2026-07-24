@@ -273,7 +273,7 @@ function renderReelsFeed() {
         card.innerHTML = `
             <!-- Video & Audio Fallback Container -->
             <div class="reel-video-container w-full h-full relative flex items-center justify-center bg-gradient-to-b from-neutral-950 via-neutral-900 to-black overflow-hidden" onpointerdown="onCardDown(event, ${idx})" onpointerup="onCardUp(event, ${idx})">
-                <video class="reel-video" src="${videoSrc}" preload="auto" loop playsinline webkit-playsinline muted onerror="this.classList.add('hidden'); const fb = this.parentElement.querySelector('.audio-fallback'); if (fb) fb.classList.remove('hidden');"></video>
+                <video class="reel-video" src="${videoSrc}" preload="auto" loop playsinline webkit-playsinline onerror="this.classList.add('hidden'); const fb = this.parentElement.querySelector('.audio-fallback'); if (fb) fb.classList.remove('hidden');"></video>
                 
                 <!-- Audio/Speech Fallback Card (shown if video fails to load or errors out) -->
                 <div class="audio-fallback hidden absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-neutral-950 via-teal-950/90 to-neutral-950 p-6 text-center z-10 pointer-events-auto">
@@ -471,8 +471,11 @@ function unlockMobileAudio() {
     const cards = document.querySelectorAll('.reel-card');
     if (cards[currentIndex]) {
         const v = cards[currentIndex].querySelector('.reel-video');
-        if (v && v.muted) {
+        if (v) {
             v.muted = false;
+            if (v.paused && cards[currentIndex].dataset.userPaused !== 'true') {
+                v.play().catch(() => {});
+            }
         }
     }
 }
