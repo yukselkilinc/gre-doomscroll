@@ -486,31 +486,33 @@ function unlockMobileAudio() {
     window.addEventListener(evtName, unlockMobileAudio, { capture: true, passive: true });
 });
 
-// Helper to show play icon overlay only when video is in user-paused state (and comments drawer is closed)
+// Helper to show play icon overlay ONLY when the currently active reel is explicitly user-paused
 function updatePlayIconVisibility(index) {
     const cards = document.querySelectorAll('.reel-card');
     const card = cards[index];
     if (!card) return;
-    const video = card.querySelector('.reel-video');
     const overlay = card.querySelector('.play-pause-overlay');
     if (!overlay) return;
 
-    if (commentsOpen) {
+    // If comments section is open or this is NOT the current active reel, play icon MUST be hidden
+    if (commentsOpen || index !== currentIndex) {
         overlay.style.opacity = '0';
         return;
     }
 
-    // If active reel is NOT user-paused, keep play icon hidden (prevents flash during video loading/scrolling/tab navigation)
-    if (index === currentIndex && !reelPauseStates[index]) {
-        overlay.style.opacity = '0';
-        return;
-    }
-
-    if (video && (video.paused || reelPauseStates[index])) {
+    // For the currently active reel, ONLY show play icon if it is explicitly user-paused
+    if (reelPauseStates[index]) {
         overlay.style.opacity = '1';
     } else {
         overlay.style.opacity = '0';
     }
+}
+
+function updateAllPlayIconVisibilities() {
+    const cards = document.querySelectorAll('.reel-card');
+    cards.forEach((card, idx) => {
+        updatePlayIconVisibility(idx);
+    });
 }
 
 // Play active video card, pause all others, and pre-buffer nearby cards for 0ms scroll delay
@@ -576,6 +578,7 @@ function playActiveVideo(index) {
             }
         }
     });
+    updateAllPlayIconVisibilities();
     localStorage.setItem('gre_reels_index', index);
 }
 
