@@ -273,29 +273,13 @@ function renderReelsFeed() {
         const videoSrc = w.videoSrc || `videos/${w.word}.mp4`;
 
         card.innerHTML = `
-            <!-- Video & Audio Fallback Container -->
+            <!-- Video Container -->
             <div class="reel-video-container w-full h-full relative flex items-center justify-center bg-gradient-to-b from-neutral-950 via-neutral-900 to-black overflow-hidden" onpointerdown="onCardDown(event, ${idx})" onpointerup="onCardUp(event, ${idx})">
-                <video class="reel-video" src="${videoSrc}" preload="auto" loop playsinline webkit-playsinline muted onerror="this.classList.add('hidden'); const fb = this.parentElement.querySelector('.audio-fallback'); if (fb) fb.classList.remove('hidden');"></video>
-                
-                <!-- Audio/Speech Fallback Card (shown if video fails to load or errors out) -->
-                <div class="audio-fallback hidden absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-neutral-950 via-teal-950/90 to-neutral-950 p-6 text-center z-10 pointer-events-auto">
-                    <div class="w-20 h-20 rounded-full bg-teal-500/20 border border-teal-500/40 flex items-center justify-center mb-4 shadow-lg">
-                        <svg class="w-10 h-10 text-teal-400 fill-current" viewBox="0 0 24 24">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                        </svg>
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-serif font-black text-white capitalize mb-1 tracking-wide">${w.word}</h2>
-                    <span class="text-xs md:text-sm italic text-teal-300 mb-3">${w.type}</span>
-                    <p class="text-sm md:text-base text-white/80 max-w-md leading-relaxed mb-4">${w.def}</p>
-                    <button onclick="speakActiveWord(${idx})" class="px-5 py-2.5 bg-teal-600 hover:bg-teal-500 active:scale-95 text-white font-semibold text-xs rounded-full shadow-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        Listen Pronunciation
-                    </button>
-                </div>
+                <video class="reel-video" src="${videoSrc}" preload="auto" loop playsinline webkit-playsinline muted></video>
 
                 <!-- Centered Play Icon Overlay (indicates video is paused) -->
-                <div class="play-pause-overlay absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-200 z-20">
-                    <div class="p-4 bg-black/40 backdrop-blur-[2.5px] border border-white/15 rounded-full text-white shadow-xl">
+                <div class="play-pause-overlay absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 z-20">
+                    <div class="p-4 text-white">
                         <svg class="w-12 h-12 md:w-14 md:h-14" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
                         </svg>
@@ -521,7 +505,6 @@ function playActiveVideo(index) {
     const cards = document.querySelectorAll('.reel-card');
     cards.forEach((card, idx) => {
         const video = card.querySelector('.reel-video');
-        const fallback = card.querySelector('.audio-fallback');
 
         if (idx === index) {
             if (video && !video.classList.contains('hidden')) {
@@ -544,20 +527,11 @@ function playActiveVideo(index) {
                             playPromise.catch(e => {
                                 console.log("Unmuted play failed, retrying muted: ", e);
                                 video.muted = true;
-                                video.play().catch(() => {
-                                    video.classList.add('hidden');
-                                    if (fallback) fallback.classList.remove('hidden');
-                                    speakActiveWord(idx);
-                                });
+                                video.play().catch(() => {});
                             });
                         }
                     }
                     updatePlayIconVisibility(idx);
-                }
-            } else {
-                if (fallback) fallback.classList.remove('hidden');
-                if (userHasInteracted) {
-                    speakActiveWord(idx);
                 }
             }
         } else {
@@ -817,38 +791,7 @@ function handleDoubleTapLike(e, index) {
     }, 140);
 }
 
-// Speech Synthesis for Audio Fallback Mode
-let synthVoice = null;
-function speakActiveWord(index) {
-    if (!userHasInteracted) return;
-    if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
 
-    const wObj = appData[index];
-    if (!wObj) return;
-
-    // Use a premium-sounding voice if available
-    if (!synthVoice) {
-        const voices = window.speechSynthesis.getVoices();
-        synthVoice = voices.find(v => v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Premium")) || voices[0];
-    }
-
-    const utterWord = new SpeechSynthesisUtterance(wObj.word);
-    utterWord.voice = synthVoice;
-    utterWord.rate = 0.85;
-
-    const utterDef = new SpeechSynthesisUtterance(wObj.def);
-    utterDef.voice = synthVoice;
-    utterDef.rate = 0.95;
-
-    utterWord.onend = () => {
-        setTimeout(() => {
-            window.speechSynthesis.speak(utterDef);
-        }, 300);
-    };
-
-    window.speechSynthesis.speak(utterWord);
-}
 
 // Scroll / Swipe Handling using Scroll Snapping
 let scrollTimeout = null;// Saved reel progress helper
@@ -1819,6 +1762,7 @@ function pickRandomWord() {
 function importLocalClips() {
     const input = document.getElementById('import-clips-input');
     if (!input) return;
+    input.value = '';
     input.click();
 }
 
@@ -1887,80 +1831,141 @@ function findWordEntryByFilename(fileName) {
     return match || null;
 }
 
-let isImportingClips = false;
+function showImportLoading(show) {
+    const overlay = document.getElementById('import-loading-overlay');
+    if (!overlay) return;
+    if (show) {
+        overlay.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            overlay.classList.remove('opacity-0');
+        });
+    } else {
+        overlay.classList.add('opacity-0');
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+        }, 320);
+    }
+}
+
+function setImportProgress(percent) {
+    const bar = document.getElementById('import-loading-bar');
+    if (bar) bar.style.width = `${Math.min(100, Math.max(0, percent))}%`;
+}
 
 function handleLocalClipsSelected(fileList) {
-    if (isImportingClips) return;
-    isImportingClips = true;
-    setTimeout(() => { isImportingClips = false; }, 800);
-
     const input = document.getElementById('import-clips-input');
-    const files = Array.from(fileList || []).filter(f => {
-        if (!f || !f.name) return false;
-        const name = String(f.name).toLowerCase();
-        return name.endsWith('.mp4') || name.endsWith('.mov');
+    const rawFiles = Array.from(fileList || []);
+
+    const files = rawFiles.filter(f => {
+        if (!f) return false;
+        const name = String(f.name || '').toLowerCase();
+        const type = String(f.type || '').toLowerCase();
+        return (
+            type.startsWith('video/') ||
+            /\.(mp4|mov|m4v|webm|mkv|avi|3gp|flv|qt)$/i.test(name) ||
+            (f.size && f.size > 0)
+        );
     });
+
     if (files.length === 0) {
         if (input) input.value = '';
         return;
     }
 
-    const existingWords = new Set(appData.map(w => (w.word || '').toLowerCase()));
-    const addedBatchWords = new Set();
+    showImportLoading(true);
+    setImportProgress(20);
 
-    const newEntries = [];
-    const unmatched = [];
-    const duplicates = [];
+    setTimeout(() => {
+        const existingWords = new Set(appData.map(w => (w.word || '').toLowerCase()));
+        const addedBatchWords = new Set();
 
-    files.forEach(file => {
-        const match = findWordEntryByFilename(file.name);
-        if (!match) {
-            let cleanName = String(file.name).split(/[/\\]/).pop().trim();
-            cleanName = cleanName.replace(/\.[a-zA-Z0-9]+$/gi, '').trim();
-            unmatched.push(cleanName);
-            return;
-        }
+        const newEntries = [];
+        const unmatched = [];
+        const duplicates = [];
 
-        const wordLower = (match.word || '').toLowerCase();
-        if (existingWords.has(wordLower) || addedBatchWords.has(wordLower)) {
-            duplicates.push(match.word);
-            return;
-        }
+        files.forEach(file => {
+            const match = findWordEntryByFilename(file.name);
+            if (!match) {
+                let cleanName = String(file.name).split(/[/\\]/).pop().trim();
+                cleanName = cleanName.replace(/\.[a-zA-Z0-9]+$/gi, '').trim();
+                unmatched.push(cleanName);
+                return;
+            }
 
-        addedBatchWords.add(wordLower);
-        existingWords.add(wordLower);
-        newEntries.push({
-            ...match,
-            videoSrc: URL.createObjectURL(file)
+            const wordLower = (match.word || '').toLowerCase();
+            if (existingWords.has(wordLower) || addedBatchWords.has(wordLower)) {
+                duplicates.push(match.word);
+                return;
+            }
+
+            addedBatchWords.add(wordLower);
+            existingWords.add(wordLower);
+            newEntries.push({
+                ...match,
+                videoSrc: URL.createObjectURL(file)
+            });
         });
-    });
 
-    if (input) input.value = '';
+        if (input) input.value = '';
 
-    if (unmatched.length > 0) {
-        showToast(`No matching word found for: ${unmatched.join(', ')}`, 'error');
-    }
-
-    if (newEntries.length === 0) {
-        if (duplicates.length > 0) {
-            showToast(`Already imported: ${duplicates.join(', ')}`, 'info');
+        if (unmatched.length > 0) {
+            showToast(`No matching word found for: ${unmatched.join(', ')}`, 'error');
         }
-        return;
-    }
 
-    const insertAt = appData.length > 0 ? Math.min(currentIndex + 1, appData.length) : 0;
-    appData.splice(insertAt, 0, ...newEntries);
+        if (newEntries.length === 0) {
+            showImportLoading(false);
+            if (duplicates.length > 0) {
+                showToast(`Already imported: ${duplicates.join(', ')}`, 'info');
+            }
+            return;
+        }
 
-    renderReelsFeed();
+        const insertAt = appData.length > 0 ? Math.min(currentIndex + 1, appData.length) : 0;
+        appData.splice(insertAt, 0, ...newEntries);
 
-    let msg = `${newEntries.length} new clip${newEntries.length === 1 ? '' : 's'} added`;
-    if (duplicates.length > 0) {
-        msg += ` (skipped duplicate${duplicates.length === 1 ? '' : 's'}: ${duplicates.join(', ')})`;
-    }
-    showToast(msg, 'success');
+        renderReelsFeed();
+        setImportProgress(60);
 
-    currentTab = '';
-    selectReelFromDashboard(insertAt);
+        const cards = document.querySelectorAll('.reel-card');
+        const targetCard = cards[insertAt];
+        const video = targetCard ? targetCard.querySelector('.reel-video') : null;
+
+        let isCompleted = false;
+        const completeImportAndShow = () => {
+            if (isCompleted) return;
+            isCompleted = true;
+            setImportProgress(100);
+
+            setTimeout(() => {
+                showImportLoading(false);
+                let msg = `${newEntries.length} new clip${newEntries.length === 1 ? '' : 's'} added`;
+                if (duplicates.length > 0) {
+                    msg += ` (skipped duplicate${duplicates.length === 1 ? '' : 's'}: ${duplicates.join(', ')})`;
+                }
+                showToast(msg, 'success');
+
+                currentTab = '';
+                selectReelFromDashboard(insertAt);
+            }, 300);
+        };
+
+        if (video) {
+            video.preload = 'auto';
+            video.load();
+
+            if (video.readyState >= 3) {
+                setImportProgress(85);
+                setTimeout(completeImportAndShow, 400);
+            } else {
+                setImportProgress(75);
+                video.addEventListener('canplay', completeImportAndShow, { once: true });
+                video.addEventListener('loadeddata', completeImportAndShow, { once: true });
+                setTimeout(completeImportAndShow, 1400);
+            }
+        } else {
+            completeImportAndShow();
+        }
+    }, 150);
 }
 
 function bindImportInputEvents() {

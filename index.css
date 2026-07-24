@@ -87,8 +87,19 @@ body::-webkit-scrollbar, html::-webkit-scrollbar {
   justify-content: center;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.2s ease-out;
   z-index: 20;
+}
+
+.play-pause-overlay > div {
+  background-color: rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: opacity, transform;
 }
 
 /* Instantly hide play icon overlay when comments drawer is active */
@@ -101,7 +112,6 @@ body.comments-open .play-pause-overlay {
 
 /* Safari (non-webapp) only layout adjustments */
 .safari-non-webapp:not(.comments-open) .reel-video,
-.safari-non-webapp:not(.comments-open) .audio-fallback,
 .safari-non-webapp:not(.comments-open) .play-pause-overlay {
   transform: translateY(-12.2vh);
 }
@@ -284,13 +294,12 @@ body.comments-open .show-badge-container {
 }
 
 /* Smooth video shift when comments open */
-.reel-video, .audio-fallback {
+.reel-video {
   transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* Mobile/PWA comments-active video alignment (No scaling, smooth shift UP with safe area inset) */
-.comments-active .reel-video,
-.comments-active .audio-fallback {
+.comments-active .reel-video {
   transform-origin: center center;
   transform: translateY(env(safe-area-inset-top, 48px)) !important;
   margin-bottom: 0 !important;
@@ -407,8 +416,7 @@ body.comments-open .show-badge-container {
     transform: none !important;
   }
 
-  .comments-active .reel-video,
-  .comments-active .audio-fallback {
+  .comments-active .reel-video {
     transform: none !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
@@ -535,4 +543,14 @@ body.comments-open .show-badge-container {
     width: 48px !important;
     height: 48px !important;
   }
+}
+
+/* Shimmer animation for import progress bar */
+@keyframes progressShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-progress-shimmer {
+  animation: progressShimmer 1.2s infinite linear;
 }
