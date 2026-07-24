@@ -156,7 +156,7 @@ body.comments-open .play-pause-overlay {
   gap: 22px;
   align-items: center;
   z-index: 20;
-  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), -webkit-transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), -webkit-transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
 }
@@ -166,8 +166,8 @@ body.comments-open .play-pause-overlay {
 body.comments-open .action-tray {
   opacity: 0 !important;
   pointer-events: none !important;
-  -webkit-transform: translate3d(50px, 0, 0) !important;
-  transform: translate3d(50px, 0, 0) !important;
+  -webkit-transform: translate3d(85px, 0, 0) !important;
+  transform: translate3d(85px, 0, 0) !important;
 }
 
 .show-badge-container {
@@ -430,7 +430,7 @@ body.comments-open .show-badge-container {
 
 /* Word Info Overlay Smooth Slide Transition */
 .word-info-overlay {
-  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), -webkit-transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.35s ease;
+  transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), -webkit-transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.35s ease;
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
   opacity: 1;
@@ -443,8 +443,8 @@ body.comments-open .word-info-overlay {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
-  -webkit-transform: translate3d(-60px, 0, 0) !important;
-  transform: translate3d(-60px, 0, 0) !important;
+  -webkit-transform: translate3d(-85px, 0, 0) !important;
+  transform: translate3d(-85px, 0, 0) !important;
 }
 
 @media (min-width: 768px) {

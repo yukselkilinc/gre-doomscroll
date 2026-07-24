@@ -1227,13 +1227,13 @@ function openComments(e, index) {
         card.classList.add('comments-active');
         const overlay = card.querySelector('.word-info-overlay');
         if (overlay) {
-            overlay.style.transition = 'opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
+            overlay.style.transition = 'opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
             overlay.style.opacity = '0';
             overlay.style.pointerEvents = 'none';
-            overlay.style.transform = 'translate3d(-60px, 0, 0)';
+            overlay.style.transform = 'translate3d(-85px, 0, 0)';
             setTimeout(() => {
                 if (commentsOpen && overlay) overlay.style.visibility = 'hidden';
-            }, 220);
+            }, 300);
         }
         const container = card.querySelector('.reel-video-container') || card.firstElementChild;
         const video = card.querySelector('.reel-video');
@@ -1327,11 +1327,14 @@ function closeComments() {
         c.classList.remove('comments-active');
         const overlay = c.querySelector('.word-info-overlay');
         if (overlay) {
-            overlay.style.removeProperty('visibility');
+            overlay.style.visibility = 'visible';
+            overlay.style.transition = 'opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
             overlay.style.removeProperty('opacity');
             overlay.style.removeProperty('transform');
             overlay.style.removeProperty('pointer-events');
-            overlay.style.removeProperty('transition');
+            setTimeout(() => {
+                if (!commentsOpen && overlay) overlay.style.removeProperty('transition');
+            }, 300);
         }
         const container = c.querySelector('.reel-video-container') || c.firstElementChild;
         if (container) {
@@ -1639,9 +1642,7 @@ function selectReelFromDashboard(index) {
     const targetIndex = (typeof index === 'number' && !isNaN(index) && index >= 0 && index < appData.length)
         ? index
         : getResumeIndex(index);
-    if (typeof index === 'number' && !isNaN(index) && index !== currentIndex) {
-        reelPauseStates[targetIndex] = false;
-    }
+    reelPauseStates[targetIndex] = false;
     updateSavedReelIndex(targetIndex);
     
     // Temporarily set scrollBehavior to auto so positioning is instant without fast scroll animation
@@ -1982,6 +1983,8 @@ function handleLocalClipsSelected(fileList) {
         appData.splice(insertAt, 0, ...newEntries);
 
         const targetReelIndex = wasEmpty ? getResumeIndex() : insertAt;
+        reelPauseStates[targetReelIndex] = false;
+        userHasInteracted = true;
         currentIndex = targetReelIndex;
         updateSavedReelIndex(targetReelIndex);
         pauseAllVideos();
