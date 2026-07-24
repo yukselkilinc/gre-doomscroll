@@ -354,6 +354,14 @@ function renderReelsFeed() {
             updatePlayIconVisibility(idx);
         });
 
+        video.addEventListener('playing', () => {
+            updatePlayIconVisibility(idx);
+            if (idx === currentIndex && !isAppMuted) {
+                video.muted = false;
+                video.volume = 1.0;
+            }
+        });
+
         video.addEventListener('pause', () => {
             updatePlayIconVisibility(idx);
         });
@@ -560,12 +568,28 @@ function playActiveVideo(index) {
                                     video.pause();
                                 } else {
                                     video.muted = targetMuted;
+                                    video.volume = 1.0;
                                 }
                             }).catch(e => {
                                 if (idx === activeTargetIndex && !reelPauseStates[index]) {
-                                    video.muted = true;
-                                    const retry = video.play();
-                                    if (retry !== undefined) retry.catch(() => {});
+                                    if (isAppMuted) {
+                                        video.muted = true;
+                                        const retry = video.play();
+                                        if (retry !== undefined) retry.catch(() => {});
+                                    } else {
+                                        // User expects sound on! Keep video.muted = false on retry
+                                        video.muted = false;
+                                        video.volume = 1.0;
+                                        const retry = video.play();
+                                        if (retry !== undefined) {
+                                            retry.catch(() => {
+                                                // Only fallback to muted if browser policy strictly blocked unmuted autoplay
+                                                video.muted = true;
+                                                const fallbackRetry = video.play();
+                                                if (fallbackRetry !== undefined) fallbackRetry.catch(() => {});
+                                            });
+                                        }
+                                    }
                                 }
                             });
                         }
