@@ -359,9 +359,7 @@ function renderReelsFeed() {
         });
 
         video.addEventListener('canplay', () => {
-            if (idx === currentIndex && video.paused) {
-                playActiveVideo(idx);
-            }
+            updatePlayIconVisibility(idx);
         });
 
         video.addEventListener('loadedmetadata', () => {
@@ -372,6 +370,7 @@ function renderReelsFeed() {
     });
 
     requestAnimationFrame(updateDefinitionMaxWidths);
+    setupScrollListener();
 }
 
 // Calculate dynamic max-width for definition text on PC to strictly prevent text from touching or overlapping the video
@@ -506,6 +505,20 @@ function playActiveVideo(index) {
     activeTargetIndex = index;
     const cards = document.querySelectorAll('.reel-card');
 
+    // STEP 1: Immediately lock & mute all non-target videos to prevent any audio leak
+    cards.forEach((card, idx) => {
+        if (idx !== index) {
+            const video = card.querySelector('.reel-video');
+            if (video) {
+                video.muted = true;
+                if (!video.paused) {
+                    video.pause();
+                }
+            }
+        }
+    });
+
+    // STEP 2: Manage virtual window and playback
     cards.forEach((card, idx) => {
         const video = card.querySelector('.reel-video');
         if (!video) return;
@@ -856,33 +869,42 @@ function getResumeIndex(requestedIndex) {
 }
 
 let isProgrammaticScroll = false;
+let reelsObserver = null;
 
-// Scroll position & swipe listener for reels feed
+// IntersectionObserver feed scroll engine for Instagram/TikTok grade feed stability
 function setupScrollListener() {
     const feed = document.getElementById('reels-feed');
     if (!feed) return;
 
-    feed.addEventListener('scroll', () => {
+    if (reelsObserver) {
+        reelsObserver.disconnect();
+        reelsObserver = null;
+    }
+
+    const observerOptions = {
+        root: feed,
+        threshold: 0.65 // Card must be 65% visible in viewport to trigger active reel change
+    };
+
+    reelsObserver = new IntersectionObserver((entries) => {
         if (isProgrammaticScroll || feed.classList.contains('hidden') || feed.offsetHeight === 0) return;
 
-        const index = Math.round(feed.scrollTop / window.innerHeight);
-        if (index < 0 || index >= appData.length) return;
-        
-        // Instant video playback as soon as user swipes past the 50% snap boundary
-        if (index !== currentIndex) {
-            const prevCard = document.querySelectorAll('.reel-card')[currentIndex];
-            if (prevCard) {
-                const video = prevCard.querySelector('.reel-video');
-                if (video && !video.paused) {
-                    video.pause();
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const card = entry.target;
+                const idx = parseInt(card.dataset.index, 10);
+                if (!isNaN(idx) && idx >= 0 && idx < appData.length && idx !== currentIndex) {
+                    updateSavedReelIndex(idx);
+                    closeComments();
+                    reelPauseStates[idx] = false;
+                    playActiveVideo(idx);
                 }
             }
-            updateSavedReelIndex(index);
-            closeComments();
-            reelPauseStates[index] = false;
-            playActiveVideo(index);
-        }
-    });
+        });
+    }, observerOptions);
+
+    const cards = feed.querySelectorAll('.reel-card');
+    cards.forEach(card => reelsObserver.observe(card));
 }
 
 // State Accessors (likes, bookmarks, learned) using local storage
