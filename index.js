@@ -79,6 +79,8 @@ function lockWindowScroll() {
 window.addEventListener('scroll', lockWindowScroll, { passive: true });
 window.addEventListener('resize', lockWindowScroll, { passive: true });
 window.addEventListener('orientationchange', () => setTimeout(lockWindowScroll, 50));
+document.addEventListener('touchstart', lockWindowScroll, { passive: true });
+document.addEventListener('touchend', lockWindowScroll, { passive: true });
 
 // Prevent page-level rubber-band scroll at the source (mainly a Safari-non-webapp issue),
 // instead of only snapping back after a visible drift. Anything inside the reels feed or
@@ -273,7 +275,7 @@ function renderReelsFeed() {
         card.innerHTML = `
             <!-- Video & Audio Fallback Container -->
             <div class="reel-video-container w-full h-full relative flex items-center justify-center bg-gradient-to-b from-neutral-950 via-neutral-900 to-black overflow-hidden" onpointerdown="onCardDown(event, ${idx})" onpointerup="onCardUp(event, ${idx})">
-                <video class="reel-video" src="${videoSrc}" preload="auto" loop playsinline webkit-playsinline onerror="this.classList.add('hidden'); const fb = this.parentElement.querySelector('.audio-fallback'); if (fb) fb.classList.remove('hidden');"></video>
+                <video class="reel-video" src="${videoSrc}" preload="auto" loop playsinline webkit-playsinline muted onerror="this.classList.add('hidden'); const fb = this.parentElement.querySelector('.audio-fallback'); if (fb) fb.classList.remove('hidden');"></video>
                 
                 <!-- Audio/Speech Fallback Card (shown if video fails to load or errors out) -->
                 <div class="audio-fallback hidden absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-neutral-950 via-teal-950/90 to-neutral-950 p-6 text-center z-10 pointer-events-auto">
@@ -373,14 +375,6 @@ function renderReelsFeed() {
             }
         });
 
-        video.addEventListener('play', () => {
-            updatePlayPauseState(card, false);
-        });
-
-        video.addEventListener('pause', () => {
-            updatePlayPauseState(card, true);
-        });
-
         video.addEventListener('loadedmetadata', () => {
             updateDefinitionMaxWidths();
         });
@@ -394,30 +388,33 @@ function renderReelsFeed() {
 // Calculate dynamic max-width for definition text on PC to strictly prevent text from touching or overlapping the video
 function updateDefinitionMaxWidths() {
     const isPC = window.innerWidth >= 768;
-    if (!isPC) return;
-
     const cards = document.querySelectorAll('.reel-card');
+    
     cards.forEach(card => {
         const overlay = card.querySelector('.word-info-overlay');
         const p = overlay ? overlay.querySelector('p') : null;
         if (!overlay || !p) return;
         
-        const video = card.querySelector('.reel-video');
-        let videoAspect = 9 / 16;
-        if (video && video.videoWidth && video.videoHeight) {
-            videoAspect = video.videoWidth / video.videoHeight;
+        if (isPC) {
+            const video = card.querySelector('.reel-video');
+            let videoAspect = 9 / 16;
+            if (video && video.videoWidth && video.videoHeight) {
+                videoAspect = video.videoWidth / video.videoHeight;
+            }
+            
+            const videoH = window.innerHeight - 64;
+            const actualVideoW = Math.min(window.innerWidth, videoH * videoAspect);
+            const actualVideoLeft = (window.innerWidth - actualVideoW) / 2;
+            
+            const overlayLeft = overlay.getBoundingClientRect().left || 16;
+            const maxW = Math.max(160, Math.floor((actualVideoLeft - overlayLeft - 16) * 0.90));
+            
+            p.style.maxWidth = `${maxW}px`;
+            p.style.wordBreak = 'break-word';
+            p.style.whiteSpace = 'normal';
+        } else {
+            p.style.maxWidth = ''; // Mobile default
         }
-        
-        const videoH = window.innerHeight - 64;
-        const actualVideoW = Math.min(window.innerWidth, videoH * videoAspect);
-        const actualVideoLeft = (window.innerWidth - actualVideoW) / 2;
-        
-        const overlayLeft = overlay.getBoundingClientRect().left || 16;
-        const maxW = Math.max(160, Math.floor((actualVideoLeft - overlayLeft - 16) * 0.90));
-        
-        p.style.maxWidth = `${maxW}px`;
-        p.style.wordBreak = 'break-word';
-        p.style.whiteSpace = 'normal';
     });
 }
 
@@ -471,11 +468,8 @@ function unlockMobileAudio() {
     const cards = document.querySelectorAll('.reel-card');
     if (cards[currentIndex]) {
         const v = cards[currentIndex].querySelector('.reel-video');
-        if (v) {
+        if (v && v.muted) {
             v.muted = false;
-            if (v.paused && cards[currentIndex].dataset.userPaused !== 'true') {
-                v.play().catch(() => {});
-            }
         }
     }
 }
@@ -491,10 +485,6 @@ function playActiveVideo(index) {
     cards.forEach((card, idx) => {
         const video = card.querySelector('.reel-video');
         const fallback = card.querySelector('.audio-fallback');
-
-        // Reset user pause state on scroll so resume button NEVER appears during scroll transitions
-        card.dataset.userPaused = 'false';
-        updatePlayPauseState(card, false);
 
         if (idx === index) {
             if (video && !video.classList.contains('hidden')) {
@@ -618,10 +608,9 @@ function onCardUp(e, index) {
 
     const deltaY = cardDragStartY - e.clientY;
     const isPC = window.innerWidth >= 768;
-    const dragLimit = isPC ? 10 : 25;
 
-    // Scroll / Swipe Guard: If finger moved beyond dragLimit vertically, treat as SCROLL/SWIPE, NOT tap!
-    if (Math.abs(deltaY) > dragLimit) {
+    // Scroll / Swipe Guard: If finger moved > 10px vertically, treat as SCROLL/SWIPE, NOT tap!
+    if (Math.abs(deltaY) > 10) {
         if (isPC && Math.abs(deltaY) > DRAG_THRESHOLD) {
             const feed = document.getElementById('reels-feed');
             if (feed) {
@@ -647,13 +636,11 @@ function onCardUp(e, index) {
             const video = card.querySelector('.reel-video');
             if (video && !video.classList.contains('hidden')) {
                 if (video.paused) {
-                    card.dataset.userPaused = 'false';
                     video.play().catch(() => {});
-                    updatePlayPauseState(card, false);
+                    showPlayPauseOverlay(index, true);
                 } else {
-                    card.dataset.userPaused = 'true';
                     video.pause();
-                    updatePlayPauseState(card, true);
+                    showPlayPauseOverlay(index, false);
                 }
             }
             tapTimeout = null;
@@ -707,74 +694,21 @@ function openShowIMDB(e, showName) {
     }, 50);
 }
 
-function updatePlayPauseState(card, isPaused) {
-    if (!card) return;
-    const overlay = card.querySelector('.play-pause-overlay');
-    if (!overlay) return;
-
-    const commentsOpen = document.body.classList.contains('comments-open');
-    const commentsActive = card.classList.contains('comments-active');
-
-    if (isPaused && !commentsOpen && !commentsActive) {
-        overlay.innerHTML = `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg></div>`;
-        requestAnimationFrame(() => {
-            overlay.style.transition = 'opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
-            overlay.style.opacity = '1';
-        });
-    } else {
-        overlay.style.transition = 'opacity 0.25s ease-out';
-        overlay.style.opacity = '0';
-    }
-}
-
-let windowResizeTimer = null;
-window.addEventListener('resize', () => {
-    document.body.classList.add('is-resizing');
-    if (windowResizeTimer) clearTimeout(windowResizeTimer);
-    windowResizeTimer = setTimeout(() => {
-        document.body.classList.remove('is-resizing');
-        const cards = document.querySelectorAll('.reel-card');
-        if (cards[currentIndex]) {
-            const v = cards[currentIndex].querySelector('.reel-video');
-            if (v) updatePlayPauseState(cards[currentIndex], v.paused);
-        }
-    }, 320);
-}, { passive: true });
-
-function updatePlayPauseState(card, isPaused) {
-    if (!card) return;
-    const overlay = card.querySelector('.play-pause-overlay');
-    if (!overlay) return;
-
-    const isUserPaused = card.dataset.userPaused === 'true';
-    if (isPaused && isUserPaused && !commentsOpen) {
-        overlay.innerHTML = `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg></div>`;
-        overlay.style.transition = 'opacity 0.15s ease-out';
-        overlay.style.opacity = '1';
-    } else {
-        overlay.style.opacity = '0';
-    }
-}
-
 // Fast single-tap play/pause splash feedback
 function showPlayPauseOverlay(index, isPlay) {
     const card = document.querySelectorAll('.reel-card')[index];
-    if (!card) return;
-    const overlay = card.querySelector('.play-pause-overlay');
+    const overlay = card ? card.querySelector('.play-pause-overlay') : null;
     if (!overlay) return;
 
-    if (isPlay) {
-        overlay.innerHTML = `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg></div>`;
-        overlay.style.transition = 'opacity 0.15s ease-out';
-        overlay.style.opacity = '1';
-        setTimeout(() => {
-            overlay.style.opacity = '0';
-        }, 200);
-    } else {
-        overlay.innerHTML = `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg></div>`;
-        const video = card.querySelector('.reel-video');
-        updatePlayPauseState(card, video ? video.paused : true);
-    }
+    overlay.innerHTML = isPlay 
+        ? `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg></div>`
+        : `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg></div>`;
+        
+    overlay.style.transition = 'opacity 0.15s ease-out';
+    overlay.style.opacity = '1';
+    setTimeout(() => {
+        overlay.style.opacity = '0';
+    }, 200);
 }
 
 // Double tap Heart Pop & Fly Animation (GPU accelerated, ultra fast & smooth)
@@ -1069,17 +1003,6 @@ function escapeRegExp(string) {
 // Drawer Comments / Context Open-Close Logic
 function openComments(e, index) {
     if (e) e.stopPropagation();
-    commentsOpen = true;
-    document.body.classList.add('comments-open');
-    const activeCard = document.querySelectorAll('.reel-card')[index];
-    if (activeCard) {
-        activeCard.classList.add('comments-active');
-        const overlay = activeCard.querySelector('.play-pause-overlay');
-        if (overlay) {
-            overlay.style.transition = 'none';
-            overlay.style.opacity = '0';
-        }
-    }
     const drawer = document.getElementById('comments-drawer');
     const navbar = document.getElementById('bottom-navbar');
     
@@ -1419,12 +1342,6 @@ function closeComments() {
         hideNavbarOnPCReels();
     } else {
         navbar.classList.remove('translate-y-full');
-    }
-
-    const cards = document.querySelectorAll('.reel-card');
-    if (cards[currentIndex]) {
-        const v = cards[currentIndex].querySelector('.reel-video');
-        if (v) updatePlayPauseState(cards[currentIndex], v.paused);
     }
 
     // Restore reels feed scrolling
