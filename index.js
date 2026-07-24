@@ -79,8 +79,6 @@ function lockWindowScroll() {
 window.addEventListener('scroll', lockWindowScroll, { passive: true });
 window.addEventListener('resize', lockWindowScroll, { passive: true });
 window.addEventListener('orientationchange', () => setTimeout(lockWindowScroll, 50));
-document.addEventListener('touchstart', lockWindowScroll, { passive: true });
-document.addEventListener('touchend', lockWindowScroll, { passive: true });
 
 // Prevent page-level rubber-band scroll at the source (mainly a Safari-non-webapp issue),
 // instead of only snapping back after a visible drift. Anything inside the reels feed or
@@ -396,33 +394,30 @@ function renderReelsFeed() {
 // Calculate dynamic max-width for definition text on PC to strictly prevent text from touching or overlapping the video
 function updateDefinitionMaxWidths() {
     const isPC = window.innerWidth >= 768;
+    if (!isPC) return;
+
     const cards = document.querySelectorAll('.reel-card');
-    
     cards.forEach(card => {
         const overlay = card.querySelector('.word-info-overlay');
         const p = overlay ? overlay.querySelector('p') : null;
         if (!overlay || !p) return;
         
-        if (isPC) {
-            const video = card.querySelector('.reel-video');
-            let videoAspect = 9 / 16;
-            if (video && video.videoWidth && video.videoHeight) {
-                videoAspect = video.videoWidth / video.videoHeight;
-            }
-            
-            const videoH = window.innerHeight - 64;
-            const actualVideoW = Math.min(window.innerWidth, videoH * videoAspect);
-            const actualVideoLeft = (window.innerWidth - actualVideoW) / 2;
-            
-            const overlayLeft = overlay.getBoundingClientRect().left || 16;
-            const maxW = Math.max(160, Math.floor((actualVideoLeft - overlayLeft - 16) * 0.90));
-            
-            p.style.maxWidth = `${maxW}px`;
-            p.style.wordBreak = 'break-word';
-            p.style.whiteSpace = 'normal';
-        } else {
-            p.style.maxWidth = ''; // Mobile default
+        const video = card.querySelector('.reel-video');
+        let videoAspect = 9 / 16;
+        if (video && video.videoWidth && video.videoHeight) {
+            videoAspect = video.videoWidth / video.videoHeight;
         }
+        
+        const videoH = window.innerHeight - 64;
+        const actualVideoW = Math.min(window.innerWidth, videoH * videoAspect);
+        const actualVideoLeft = (window.innerWidth - actualVideoW) / 2;
+        
+        const overlayLeft = overlay.getBoundingClientRect().left || 16;
+        const maxW = Math.max(160, Math.floor((actualVideoLeft - overlayLeft - 16) * 0.90));
+        
+        p.style.maxWidth = `${maxW}px`;
+        p.style.wordBreak = 'break-word';
+        p.style.whiteSpace = 'normal';
     });
 }
 
@@ -493,6 +488,10 @@ function playActiveVideo(index) {
     cards.forEach((card, idx) => {
         const video = card.querySelector('.reel-video');
         const fallback = card.querySelector('.audio-fallback');
+
+        // Reset user pause state on scroll so resume button NEVER appears during scroll transitions
+        card.dataset.userPaused = 'false';
+        updatePlayPauseState(card, false);
 
         if (idx === index) {
             if (video && !video.classList.contains('hidden')) {
@@ -616,9 +615,10 @@ function onCardUp(e, index) {
 
     const deltaY = cardDragStartY - e.clientY;
     const isPC = window.innerWidth >= 768;
+    const dragLimit = isPC ? 10 : 25;
 
-    // Scroll / Swipe Guard: If finger moved > 10px vertically, treat as SCROLL/SWIPE, NOT tap!
-    if (Math.abs(deltaY) > 10) {
+    // Scroll / Swipe Guard: If finger moved beyond dragLimit vertically, treat as SCROLL/SWIPE, NOT tap!
+    if (Math.abs(deltaY) > dragLimit) {
         if (isPC && Math.abs(deltaY) > DRAG_THRESHOLD) {
             const feed = document.getElementById('reels-feed');
             if (feed) {
@@ -644,11 +644,13 @@ function onCardUp(e, index) {
             const video = card.querySelector('.reel-video');
             if (video && !video.classList.contains('hidden')) {
                 if (video.paused) {
+                    card.dataset.userPaused = 'false';
                     video.play().catch(() => {});
-                    showPlayPauseOverlay(index, true);
+                    updatePlayPauseState(card, false);
                 } else {
+                    card.dataset.userPaused = 'true';
                     video.pause();
-                    showPlayPauseOverlay(index, false);
+                    updatePlayPauseState(card, true);
                 }
             }
             tapTimeout = null;
@@ -735,6 +737,21 @@ window.addEventListener('resize', () => {
         }
     }, 320);
 }, { passive: true });
+
+function updatePlayPauseState(card, isPaused) {
+    if (!card) return;
+    const overlay = card.querySelector('.play-pause-overlay');
+    if (!overlay) return;
+
+    const isUserPaused = card.dataset.userPaused === 'true';
+    if (isPaused && isUserPaused && !commentsOpen) {
+        overlay.innerHTML = `<div class="p-4 bg-black/40 rounded-full text-white"><svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg></div>`;
+        overlay.style.transition = 'opacity 0.15s ease-out';
+        overlay.style.opacity = '1';
+    } else {
+        overlay.style.opacity = '0';
+    }
+}
 
 // Fast single-tap play/pause splash feedback
 function showPlayPauseOverlay(index, isPlay) {
