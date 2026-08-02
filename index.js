@@ -540,26 +540,33 @@ function pooledVideoAssignedIndex(video) {
 // iOS Safari seeks back to the nearest sync point (~t=0 on short clips) when a
 // playing, not-fully-buffered video's playbackRate changes - which reads as the
 // clip "starting over" on 2x-hold and again on release. Every rate change must
-// therefore be routed through here so we can snapshot the intended position and
-// arm a short-lived guard; the seeked listener in createPooledVideoElement then
-// cancels any phantom backward jump by restoring it.
+// therefore be routed through here so we can arm a short-lived guard; the
+// seeked/timeupdate listeners in createPooledVideoElement cancel any phantom
+// backward jump by restoring the forward-most position seen since arming.
 function setPlaybackRate(video, rate) {
     if (!video) return;
-    video.dataset.guardPos = String(video.currentTime || 0);
-    video.dataset.guardArmed = '1';
+    // Preserve an already-armed guard's snapshot instead of re-snapshotting:
+    // repeated rate writes during a drag can fire while iOS has already snapped
+    // currentTime toward 0, and overwriting the guard there would permanently
+    // lose the position the user was actually watching.
+    if (video.dataset.guardArmed !== '1') {
+        video.dataset.guardMax = String(video.currentTime || 0);
+        video.dataset.guardArmed = '1';
+    }
     video.playbackRate = rate;
     // Self-disarm in case no seeked event fires (desktop / already-buffered
     // playback) so the guard can never linger and swallow a later legit seek.
-    setTimeout(() => { delete video.dataset.guardArmed; }, 500);
+    setTimeout(() => { delete video.dataset.guardArmed; }, 700);
 }
 
 // Disarms the rate-change seek guard after an intentional currentTime write
 // (attach reset, saved-position restore, ended reset) so it never overrides a
-// legitimate seek. Does NOT apply to loop-restart - the guard restore there is
-// harmless (it just holds the last position briefly).
+// legitimate seek. A natural end-of-loop restart needs no exemption here - the
+// seeked listener's end-of-loop check already leaves those alone.
 function markLegitSeek(video) {
     if (!video) return;
     delete video.dataset.guardArmed;
+    delete video.dataset.guardMax;
 }
 
 function createPooledVideoElement() {
@@ -609,14 +616,31 @@ function createPooledVideoElement() {
 
     // iOS Safari phantom-seek guard: when setPlaybackRate arms the guard during
     // a rate change, AVPlayer's snap-back to the nearest sync point manifests as
-    // a currentTime drop. Detect it here and restore the intended position. If
-    // currentTime stayed put (or moved forward), just disarm.
+    // a currentTime drop. Forward-track the highest position seen while the
+    // guard is armed (so a restore lands where playback actually got to, even
+    // after a long hold or repeated re-arms), and on any seeked that falls well
+    // behind that position, restore it.
+    video.addEventListener('timeupdate', () => {
+        if (video.dataset.guardArmed !== '1') return;
+        const guardMax = parseFloat(video.dataset.guardMax || '0');
+        if (isFinite(guardMax) && video.currentTime > guardMax) {
+            video.dataset.guardMax = String(video.currentTime);
+        }
+    });
     video.addEventListener('seeked', () => {
         if (video.dataset.guardArmed !== '1') return;
-        const guardPos = parseFloat(video.dataset.guardPos);
-        delete video.dataset.guardArmed;
-        if (isFinite(guardPos) && video.currentTime < guardPos - 0.4) {
-            try { video.currentTime = guardPos; } catch (e) {}
+        const guardMax = parseFloat(video.dataset.guardMax);
+        if (!isFinite(guardMax)) { delete video.dataset.guardArmed; return; }
+        const dur = isFinite(video.duration) && video.duration > 0 ? video.duration : Infinity;
+        // A backward jump that isn't a natural end-of-loop restart.
+        if (video.currentTime < guardMax - 0.4 && guardMax < dur - 0.4) {
+            try { video.currentTime = guardMax; } catch (e) {}
+            // Stay armed (the setPlaybackRate disarm timer cleans up) so a
+            // second phantom seek iOS performs right after the restore is also
+            // caught instead of slipping through and restarting the clip. The
+            // restore's own seeked event disarms the guard normally.
+        } else {
+            delete video.dataset.guardArmed;
         }
     });
 
