@@ -537,6 +537,31 @@ function pooledVideoAssignedIndex(video) {
     return raw === undefined || raw === '' ? -1 : parseInt(raw, 10);
 }
 
+// iOS Safari seeks back to the nearest sync point (~t=0 on short clips) when a
+// playing, not-fully-buffered video's playbackRate changes - which reads as the
+// clip "starting over" on 2x-hold and again on release. Every rate change must
+// therefore be routed through here so we can snapshot the intended position and
+// arm a short-lived guard; the seeked listener in createPooledVideoElement then
+// cancels any phantom backward jump by restoring it.
+function setPlaybackRate(video, rate) {
+    if (!video) return;
+    video.dataset.guardPos = String(video.currentTime || 0);
+    video.dataset.guardArmed = '1';
+    video.playbackRate = rate;
+    // Self-disarm in case no seeked event fires (desktop / already-buffered
+    // playback) so the guard can never linger and swallow a later legit seek.
+    setTimeout(() => { delete video.dataset.guardArmed; }, 500);
+}
+
+// Disarms the rate-change seek guard after an intentional currentTime write
+// (attach reset, saved-position restore, ended reset) so it never overrides a
+// legitimate seek. Does NOT apply to loop-restart - the guard restore there is
+// harmless (it just holds the last position briefly).
+function markLegitSeek(video) {
+    if (!video) return;
+    delete video.dataset.guardArmed;
+}
+
 function createPooledVideoElement() {
     const video = document.createElement('video');
     video.className = 'reel-video';
@@ -574,25 +599,6 @@ function createPooledVideoElement() {
             video.muted = false;
             video.volume = 1.0;
         }
-
-
-
-        // One-time per-element "priming" of the playbackRate pipeline. Some
-        // mobile WebKit builds visibly hitch / seek back to the last keyframe
-        // the very FIRST time a playing video's rate changes away from 1x.
-        // We eat that cost here - silently, right as the clip starts and is
-        // already settling in from a cold start anyway - so the real 2x hold
-        // gesture (and pause/resume rate flips) later on are smooth.
-        if (!video.dataset.rateWarmed) {
-            video.dataset.rateWarmed = '1';
-            const restoreRate = video.playbackRate || 1;
-            video.playbackRate = 2;
-            requestAnimationFrame(() => {
-                if (!(holdActive && holdIndex === idx)) {
-                    video.playbackRate = restoreRate;
-                }
-            });
-        }
     });
     video.addEventListener('pause', () => {
         updatePlayIconVisibility(pooledVideoAssignedIndex(video));
@@ -600,6 +606,19 @@ function createPooledVideoElement() {
     });
     video.addEventListener('canplay', () => updatePlayIconVisibility(pooledVideoAssignedIndex(video)));
     video.addEventListener('loadedmetadata', () => updateDefinitionMaxWidths(pooledVideoAssignedIndex(video)));
+
+    // iOS Safari phantom-seek guard: when setPlaybackRate arms the guard during
+    // a rate change, AVPlayer's snap-back to the nearest sync point manifests as
+    // a currentTime drop. Detect it here and restore the intended position. If
+    // currentTime stayed put (or moved forward), just disarm.
+    video.addEventListener('seeked', () => {
+        if (video.dataset.guardArmed !== '1') return;
+        const guardPos = parseFloat(video.dataset.guardPos);
+        delete video.dataset.guardArmed;
+        if (isFinite(guardPos) && video.currentTime < guardPos - 0.4) {
+            try { video.currentTime = guardPos; } catch (e) {}
+        }
+    });
 
     return video;
 }
@@ -636,19 +655,13 @@ function attachVideoToCard(idx) {
     // situation is frequently blocked).
     if (!video.paused) video.pause();
     video.muted = true;
-    video.playbackRate = 1;
+    setPlaybackRate(video, 1);
     video.removeAttribute('src');
     video.load();
     video.preload = 'none';
     video.currentTime = 0;
+    markLegitSeek(video);
     video.dataset.assignedIndex = String(idx);
-    // The rateWarmed priming is per-SOURCE, not per-element: pooled elements
-    // are reused across many different clips, and a freshly-loaded source is
-    // cold again. Re-arm it so the 1x->2x flip priming runs the next time this
-    // element actually starts playing (otherwise the first rate change away
-    // from 1x on the new clip seeks back to the last keyframe, restarting the
-    // video on 2x-hold and again on release).
-    delete video.dataset.rateWarmed;
 
     const feedData = getActiveFeed();
     const w = feedData[idx];
@@ -1164,7 +1177,7 @@ function togglePlayPauseSoft(index) {
     if (reelPauseStates[index]) {
         // Resume
         reelPauseStates[index] = false;
-        video.playbackRate = (speedLocked && index === currentIndex) ? 2 : 1;
+        setPlaybackRate(video, (speedLocked && index === currentIndex) ? 2 : 1);
         if (video.paused) {
             // Only true if the element was ever hard-paused elsewhere (e.g. a
             // freshly attached reel that never started) - fall back to play().
@@ -1173,7 +1186,7 @@ function togglePlayPauseSoft(index) {
     } else {
         // Pause (soft freeze - see comment above)
         reelPauseStates[index] = true;
-        video.playbackRate = 0;
+        setPlaybackRate(video, 0);
     }
     updatePlayIconVisibility(index);
 }
@@ -1199,7 +1212,7 @@ function playActiveVideo(index) {
     hideAllSpeedDisclaimers();
     const activeCardForSpeed = getCardEl(index);
     const activeVideoForSpeed = activeCardForSpeed ? activeCardForSpeed.querySelector('.reel-video') : null;
-    if (activeVideoForSpeed) activeVideoForSpeed.playbackRate = 1;
+    if (activeVideoForSpeed) setPlaybackRate(activeVideoForSpeed, 1);
     const newWindow = new Set();
     for (let d = -1; d <= 1; d++) {
         const i = index + d;
@@ -1246,6 +1259,7 @@ function playActiveVideo(index) {
             // frame the user left off, not from the beginning.
             if (reelSavedTimes[idx] !== undefined) {
                 try { video.currentTime = reelSavedTimes[idx]; } catch (e) {}
+                markLegitSeek(video);
                 delete reelSavedTimes[idx];
             }
 
@@ -1257,6 +1271,7 @@ function playActiveVideo(index) {
                 // Reset position ONLY if ended
                 if (video.ended) {
                     try { video.currentTime = 0; } catch (e) {}
+                    markLegitSeek(video);
                 }
 
                 // Mobile browsers (notably Safari) reliably allow MUTED autoplay even
@@ -1546,7 +1561,7 @@ function applySpeedGestureVisuals(index) {
     const video = card ? card.querySelector('.reel-video') : null;
     if (video) {
         // preservesPitch is already set once in createPooledVideoElement.
-        video.playbackRate = computeLiveSpeedForGesture();
+        setPlaybackRate(video, computeLiveSpeedForGesture());
     }
     setSpeedDisclaimer(index, {
         mode: speedGestureLockAtStart ? 'unlock' : 'lock',
@@ -1612,12 +1627,12 @@ function cancelActiveHold() {
     const video = card ? card.querySelector('.reel-video') : null;
     if (zone === 'speed') {
         setSpeedDisclaimer(idx, null);
-        if (video) video.playbackRate = speedLocked ? 2 : 1;
+        setPlaybackRate(video, speedLocked ? 2 : 1);
     } else if (zone === 'pause' && video && !holdPauseWasAlreadyPaused && !reelPauseStates[idx]) {
         // A hold-to-pause froze the frame (rate=0) and got interrupted before
         // a normal release - restore normal playback since the user never
         // explicitly paused this reel.
-        video.playbackRate = (speedLocked && idx === currentIndex) ? 2 : 1;
+        setPlaybackRate(video, (speedLocked && idx === currentIndex) ? 2 : 1);
         if (video.paused) video.play().catch(() => {});
     }
     holdActive = false;
@@ -1635,7 +1650,7 @@ function triggerHoldPause(index) {
     // Soft-pause (rate=0) rather than a real .pause() - keeps the audio
     // session alive so releasing the hold resumes sound instantly.
     if (!holdPauseWasAlreadyPaused && video) {
-        video.playbackRate = 0;
+        setPlaybackRate(video, 0);
     }
     setCardHoldUIHidden(card, true);
 }
@@ -1730,21 +1745,21 @@ function resolveHoldGesture(index) {
             // Lock-direction gesture: was 2x for the whole hold either way.
             if (crossed) {
                 speedLocked = true;
-                if (video) video.playbackRate = 2;
+                setPlaybackRate(video, 2);
                 showSpeedToast('Locked at 2x speed');
             } else {
                 speedLocked = false;
-                if (video) video.playbackRate = 1;
+                setPlaybackRate(video, 1);
             }
         } else {
             // Unlock-direction gesture: live-previewed 1x once crossed.
             if (crossed) {
                 speedLocked = false;
-                if (video) video.playbackRate = 1;
+                setPlaybackRate(video, 1);
                 showSpeedToast('Back to normal speed');
             } else {
                 speedLocked = true;
-                if (video) video.playbackRate = 2;
+                setPlaybackRate(video, 2);
             }
         }
         return true; // an engaged hold always fully resolves - no tap fallback
@@ -1755,7 +1770,7 @@ function resolveHoldGesture(index) {
         if (card) setCardHoldUIHidden(card, false);
         const video = card ? card.querySelector('.reel-video') : null;
         if (!wasAlreadyPaused && video) {
-            video.playbackRate = (speedLocked && index === currentIndex) ? 2 : 1;
+            setPlaybackRate(video, (speedLocked && index === currentIndex) ? 2 : 1);
             if (video.paused) video.play().catch(() => {}); // fallback for a genuinely-paused element
         }
         return true; // a genuine hold already fired - don't also run a tap
