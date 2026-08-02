@@ -642,6 +642,13 @@ function attachVideoToCard(idx) {
     video.preload = 'none';
     video.currentTime = 0;
     video.dataset.assignedIndex = String(idx);
+    // The rateWarmed priming is per-SOURCE, not per-element: pooled elements
+    // are reused across many different clips, and a freshly-loaded source is
+    // cold again. Re-arm it so the 1x->2x flip priming runs the next time this
+    // element actually starts playing (otherwise the first rate change away
+    // from 1x on the new clip seeks back to the last keyframe, restarting the
+    // video on 2x-hold and again on release).
+    delete video.dataset.rateWarmed;
 
     const feedData = getActiveFeed();
     const w = feedData[idx];
