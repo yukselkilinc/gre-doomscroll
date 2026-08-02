@@ -1,0 +1,17 @@
+{
+  "name": "GRE Doomscroll",
+  "short_name": "GRE Swipe",
+  "description": "Swipable reels-style study app for frequent GRE vocabulary words.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
